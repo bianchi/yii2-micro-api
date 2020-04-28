@@ -1,0 +1,39 @@
+version: '3'
+networks:
+  rede:
+    driver: bridge
+services:
+  php:
+    container_name: cbrdoc-web
+    image: yiisoftware/yii2-php:7.4-apache
+    volumes:
+        - ./:/app
+        - ./docker/apache/000-default.conf:/etc/apache2/sites-enabled/000-default.conf
+    ports:
+      - '8000:80'
+    networks:
+    - rede
+  db:
+    container_name: cbrdoc-mysql
+    ports:
+    - 3306:3306
+    image: mysql:5.7
+    volumes:
+        - /etc/docker/mysql:/var/lib/mysql
+    environment:
+        MYSQL_ROOT_PASSWORD: p7B?q-9f9E2fBVse
+        MYSQL_DATABASE: cbrdoc
+        MYSQL_USER: cbrdoc
+        MYSQL_PASSWORD: 36uVpqzJgfP9s2CJ
+    networks:
+    - rede
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin:latest
+    container_name: cbrdoc-phpmyadmin
+    ports:
+    - 82:80
+    environment:
+        MYSQL_USER: cbrdoc
+        MYSQL_PASSWORD: 36uVpqzJgfP9s2CJ
+    networks:
+    - rede
