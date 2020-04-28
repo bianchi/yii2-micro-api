@@ -6,13 +6,16 @@ class m200428_185343_create_tables extends Migration
 {
     public function safeUp()
     {
-
+        $this->createTable('companies', [
+            'id' => $this->primaryKey(),
+            'name' => $this->string(50)
+        ]);
     }
 
     public function safeDown()
     {
-        echo "m200428_185343_create_tables cannot be reverted.\n";
+        $this->dropTable('companies');
 
-        return false;
+        return true;
     }
 }
