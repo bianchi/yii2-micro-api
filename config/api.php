@@ -8,6 +8,7 @@ $config = [
     'aliases' => [
         '@api' => dirname(__DIR__),
     ],
+    'language' => 'pt-BR',
     'components' => [
         'urlManager' => [
             'enablePrettyUrl' => true,
@@ -15,14 +16,20 @@ $config = [
             'showScriptName' => false,
             'rules' => [
                 ['class' => 'yii\rest\UrlRule', 'controller' => 'company'],
+                ['class' => 'yii\rest\UrlRule', 'controller' => 'user', 'extraPatterns' => [
+                    'POST login' => 'login',
+                ]],
             ],
         ],
         'request' => [
+            'enableCookieValidation' => false,
             'parsers' => [
                 'application/json' => 'yii\web\JsonParser',
-            ]
+            ],
         ],
         'response' => [
+            'class' => \yii\web\Response::class,
+            'format' => \yii\web\Response::FORMAT_JSON,
             'formatters' => [
                 \yii\web\Response::FORMAT_JSON => [
                     'class' => 'yii\web\JsonResponseFormatter',
@@ -30,6 +37,11 @@ $config = [
                     'encodeOptions' => JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE,
                 ],
             ],
+        ],
+        'user' => [
+            'identityClass' => 'api\models\User',
+            'loginUrl' => null,
+            'enableSession' => false
         ],
         'mailer' => [
             'class' => 'yii\swiftmailer\Mailer',
@@ -44,7 +56,7 @@ $config = [
                 'encryption' => 'tls',
             ],
         ],
-    ]
+    ],
 ];
 
 $db = require __DIR__ . '/database.php';

@@ -4,15 +4,7 @@ namespace api\controllers;
 
 use yii\rest\ActiveController;
 
-class CompanyController extends ActiveController
+class CompanyController extends BaseController
 {
     public $modelClass = 'api\models\Company';
-
-    public function behaviors()
-    {
-        // remove rateLimiter which requires an authenticated user to work
-        $behaviors = parent::behaviors();
-        unset($behaviors['rateLimiter']);
-        return $behaviors;
-    }
 }
