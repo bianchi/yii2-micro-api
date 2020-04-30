@@ -2,6 +2,7 @@
 
 namespace api\controllers;
 
+use api\models\Company;
 use api\models\User;
 use yii\web\ForbiddenHttpException;
 use yii\web\NotFoundHttpException;
@@ -10,6 +11,10 @@ class UserController extends BaseController
 {
     public $modelClass = 'api\models\User';
 
+    /**
+     * Disable user/index 
+     * @return array $actions
+     */
     public function actions()
     {
         $actions = parent::actions();
@@ -22,8 +27,6 @@ class UserController extends BaseController
 
     /**
      * Checks the privilege of the current user.
-     *
-     * If the user does not have access, a [[ForbiddenHttpException]] should be thrown.
      *
      * @param string $action the ID of the action to be executed
      * @param \yii\base\Model $model the model to be accessed. If `null`, it means no specific model is being accessed.
@@ -39,6 +42,12 @@ class UserController extends BaseController
         }
     }
 
+     /**
+     * Check user email/password, if ok generates an access_token
+     *
+     * @return User $user
+     * @throws ForbiddenHttpException If user doesn't exist or password is wrong
+     */
     public function actionLogin()
     {
         $body = \Yii::$app->getRequest()->getBodyParams();

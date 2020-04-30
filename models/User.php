@@ -3,6 +3,7 @@
 namespace api\models;
 
 use Yii;
+use yii\web\ForbiddenHttpException;
 
 /**
  * This is the model class for table "users".
@@ -30,6 +31,11 @@ class User extends \yii\db\ActiveRecord implements \yii\web\IdentityInterface
         return 'users';
     }
 
+    /**
+     * Model validation rules
+     * 
+     * @return array
+     */
     public function rules()
     {
         return [
@@ -46,6 +52,11 @@ class User extends \yii\db\ActiveRecord implements \yii\web\IdentityInterface
         ];
     }
 
+    /**
+     * Label for each attribute. It will be used in errors
+     * 
+     * @return array
+     */
     public function attributeLabels()
     {
         return [
@@ -61,6 +72,16 @@ class User extends \yii\db\ActiveRecord implements \yii\web\IdentityInterface
             'can_see_billing' => 'Pode ver faturas de pagamentos',
             'company_id' => 'ID da empresa',
         ];
+    }
+
+    /**
+     * Return an array of relations that can be expanded e.g. /user/5?expand=company
+     * 
+     * @return array
+     */
+    public function extraFields()
+    {
+        return ['company'];
     }
 
     /**
@@ -128,6 +149,11 @@ class User extends \yii\db\ActiveRecord implements \yii\web\IdentityInterface
     {
         if (parent::beforeSave($insert)) {
             if ($this->isNewRecord) {
+                $company = Company::findOne($this->company_id);
+                if (count($company->users) >= $company->max_users) {
+                    throw new ForbiddenHttpException("Máximo de usuários permitidos para essa empresa foi atingido. Usuários cadastrados: " . count($company->users));
+                }
+
                 $this->password = password_hash($this->password, PASSWORD_BCRYPT);
                 $this->access_token = Yii::$app->getSecurity()->generateRandomString();
             }
@@ -138,7 +164,7 @@ class User extends \yii\db\ActiveRecord implements \yii\web\IdentityInterface
 
     public function afterSave($insert, $changedAttributes)
     {
-        $this->refresh();
+        $this->refresh(); // refresh attributes with database values
 
         return parent::afterSave($insert, $changedAttributes);
     }
