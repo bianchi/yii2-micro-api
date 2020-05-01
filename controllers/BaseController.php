@@ -6,6 +6,7 @@ use yii\filters\auth\HttpBearerAuth;
 use yii\rest\ActiveController;
 use yii\web\ForbiddenHttpException;
 use api\models\User;
+use yii\web\UnauthorizedHttpException;
 
 class BaseController extends ActiveController
 {
@@ -25,7 +26,7 @@ class BaseController extends ActiveController
             $tokenExpirationDate->modify('+' . self::TOKEN_DURATION_MINUTES . ' minutes');
 
             if ($currentDate > $tokenExpirationDate) {
-                throw new ForbiddenHttpException("Token has expired, please login again.");
+                throw new UnauthorizedHttpException("Token has expired, please login again.");
             } else {
                 $user->updateAttributes([
                     'last_api_request' => $currentDate->format('Y-m-d H:i:s'),
