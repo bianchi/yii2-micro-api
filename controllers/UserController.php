@@ -2,10 +2,10 @@
 
 namespace api\controllers;
 
-use api\models\Company;
+use api\models\Order;
+use api\models\search\OrderSearch;
 use api\models\User;
 use yii\web\ForbiddenHttpException;
-use yii\web\NotFoundHttpException;
 
 class UserController extends BaseController
 {
@@ -37,8 +37,20 @@ class UserController extends BaseController
     {
         $user = User::findOne(\Yii::$app->user->id);
 
-        if ($action === 'delete' && !$user->is_admin) { // TODO replace false with verification if the logged in user has permission
+        if ($action === 'create' && !$user->is_admin) {
+            throw new \yii\web\ForbiddenHttpException('Current logged user don\'t have permission to create users, it\'s not an admin');
+        }
+
+        if ($action === 'delete' && !$user->is_admin) {
             throw new \yii\web\ForbiddenHttpException('Current logged user don\'t have permission to delete users, it\'s not an admin');
+        }
+
+        if ($action === 'update' && !$user->is_admin &&  $model != null && $model->id != \Yii::$app->user->id) {
+            throw new \yii\web\ForbiddenHttpException('Current logged user don\'t have permission to update another user but himself, it\'s not an admin');
+        }
+
+        if ($action == 'orders' && !$user->is_admin &&  $params['user_id'] != \Yii::$app->user->id) {
+            throw new ForbiddenHttpException('Current logged user don\'t have permission to list orders from another users, it\'s not an admin');
         }
     }
 
@@ -68,5 +80,21 @@ class UserController extends BaseController
         } else {
             throw new ForbiddenHttpException('User doesn\'t exist or password is incorrect.');
         }
+    }
+
+     /**
+     * List orders from $user_id user
+     *
+     * @param int $user_id the ID of the user to search orders
+     * @return Order[] from that user
+     * @throws ForbiddenHttpException if the user does not have access
+     */
+    public function actionOrders($user_id)
+    {
+        $this->checkAccess($this->action->id, null, ['user_id' => $user_id]);
+
+        $searchModel = new OrderSearch();    
+        
+        return $searchModel->search(\Yii::$app->request->get());
     }
 }

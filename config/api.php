@@ -15,12 +15,27 @@ $config = [
             'enableStrictParsing' => true,
             'showScriptName' => false,
             'rules' => [
-                ['class' => 'yii\rest\UrlRule', 'controller' => 'user', 'extraPatterns' => [
-                    'POST login' => 'login',
-                    ]],
-                ['class' => 'yii\rest\UrlRule', 'controller' => 'company'],
-                ['class' => 'yii\rest\UrlRule', 'controller' => 'order'],
-
+                [
+                    'class' => 'yii\rest\UrlRule', 
+                    'controller' => 'user', 
+                    'extraPatterns' => [
+                        'POST login' => 'login',
+                        'GET {user_id}/orders' => 'orders'
+                    ],
+                    'tokens' => [
+                        '{user_id}' => '<user_id:\\w+>'
+                    ]
+                ],
+                [
+                    'class' => 'yii\rest\UrlRule', 
+                    'controller' => 'company',
+                    'extraPatterns' => [
+                        'GET {company_id}/orders' => 'orders'
+                    ],
+                    'tokens' => [
+                        '{company_id}' => '<company_id:\\w+>'
+                    ]
+                ],
             ],
         ],
         'request' => [

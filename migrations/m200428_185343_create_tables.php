@@ -180,11 +180,33 @@ class m200428_185343_create_tables extends Migration
             'secret' => 'secret123'
         ]);
 
+        $this->insert('companies', [
+            'name' => 'Koodari',
+            'key' => 'key456',
+            'secret' => 'secret456'
+        ]);
+
         $this->insert('users', [
-            'name' => 'User default',
-            'email' => 'user@gmail.com',
+            'name' => 'Admin from JHOB',
+            'email' => 'jhob@gmail.com',
             'password' => password_hash('123', PASSWORD_BCRYPT),
-            'company_id' => 1
+            'company_id' => 1,
+            'is_admin' => 1
+        ]);
+
+        $this->insert('users', [
+            'name' => 'User from JHOB',
+            'email' => 'jhob2@gmail.com',
+            'password' => password_hash('123', PASSWORD_BCRYPT),
+            'company_id' => 1,
+            'is_admin' => 0
+        ]);
+
+        $this->insert('users', [
+            'name' => 'User from Koodari',
+            'email' => 'koodari@gmail.com',
+            'password' => password_hash('123', PASSWORD_BCRYPT),
+            'company_id' => 2
         ]);
 
         $this->insert('orders', [
@@ -228,28 +250,61 @@ class m200428_185343_create_tables extends Migration
             'order_id' => 2,
             'status_id' => 2
         ]);
+
+        $this->insert('orders', [
+            'user_id' => 2,
+            'document_type_id' => 3,
+            'current_status_id' => 1
+        ]);
+
+        $this->insert('order_history', [
+            'order_id' => 3,
+            'status_id' => 1
+        ]);
+
+        $this->insert('orders', [
+            'user_id' => 3,
+            'document_type_id' => 7,
+            'current_status_id' => 1
+        ]);
+
+        $this->insert('order_history', [
+            'order_id' => 4,
+            'status_id' => 1
+        ]);
     }
 
     public function safeDown()
     {
-        $indexes = [
-            'users' => 'idx-users-email',
-            'users' => 'idx-users-password'
-        ];
-
-        foreach ($indexes as $table => $name) {
-            $this->dropIndex($name, $table);
-        }
-
         $foreignKeys = [
-            'users' => 'fk-users-company_id'
+            'users' => 'fk-users-company_id',
+            'orders' =>'fk-orders-user_id',
+            'orders' => 'fk-orders-document_type_id',
+            'orders' => 'fk-orders-current_status_id',
+            'order_history' => 'fk-order_history-order_id',
+            'order_history' => 'fk-order_history-status_id',
         ];
 
         foreach ($foreignKeys as $table => $name) {
             $this->dropForeignKey($name, $table);
         }
 
-        $tables = ['users', 'companies'];
+        $indexes = [
+            'users' => 'idx-users-email',
+            'users' => 'idx-users-password',
+            'orders' =>'idx-orders-user_id',
+            'orders' => 'idx-orders-document_type_id',
+            'orders' => 'idx-orders-current_status_id',
+            'order_history' => 'idx-order_history-order_id',
+            'order_history' => 'idx-order_history-status_id',
+        ];
+
+        foreach ($indexes as $table => $name) {
+            $this->dropIndex($name, $table);
+        }
+
+
+        $tables = ['order_history', 'orders', 'order_statuses', 'document_types', 'users', 'companies'];
 
         foreach ($tables as $table) {
             $this->dropTable($table);
