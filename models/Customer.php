@@ -72,7 +72,10 @@ class Customer extends \yii\db\ActiveRecord
 
     public function extraFields()
     {
-        return ['account_balance' => 'accountBalance'];
+        return [
+            'account_balance' => 'accountBalance',
+            'total_orders' => 'totalOrders',
+        ];
     }
 
     /**
@@ -89,5 +92,10 @@ class Customer extends \yii\db\ActiveRecord
         $totalDedits = FinancialTransaction::find()->where(['customer_id' => $this->id, 'operation' => FinancialTransaction::OPERATION_DEBIT])->sum('amount');
 
         return bcsub($totalCredits, $totalDedits, 2);
+    }
+
+    public function getTotalOrders()
+    {
+        return 2;
     }
 }
