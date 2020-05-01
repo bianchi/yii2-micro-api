@@ -75,7 +75,7 @@ class Query extends Component implements QueryInterface, ExpressionInterface
      */
     public $from;
     /**
-     * @var array how to group the query results. For example, `['company', 'department']`.
+     * @var array how to group the query results. For example, `['customer', 'department']`.
      * This is used to construct the GROUP BY clause in a SQL statement.
      */
     public $groupBy;

@@ -18,9 +18,9 @@ use yii\web\ForbiddenHttpException;
  * @property int $can_insert_credits
  * @property int $can_see_reports
  * @property int $can_see_billing
- * @property int $company_id
+ * @property int $customer_id
  *
- * @property Company $company
+ * @property Customer $customer
  */
 class User extends \yii\db\ActiveRecord implements \yii\web\IdentityInterface
 {
@@ -39,16 +39,16 @@ class User extends \yii\db\ActiveRecord implements \yii\web\IdentityInterface
     public function rules()
     {
         return [
-            [['name', 'email', 'password', 'company_id'], 'required'],
+            [['name', 'email', 'password', 'customer_id', 'phone'], 'required'],
             [['last_login', 'last_api_request'], 'safe'],
             [['is_admin', 'can_order_document', 'can_insert_credits', 'can_see_reports', 'can_see_billing'], 'boolean'],
-            [['company_id'], 'integer'],
+            [['customer_id'], 'integer'],
             [['name'], 'string', 'max' => 60],
             [['email'], 'email'],
             [['email'], 'unique'],
             [['email'], 'string', 'max' => 200],
             [['password', 'access_token'], 'string', 'max' => 255],
-            [['company_id'], 'exist', 'skipOnError' => true, 'targetClass' => Company::className(), 'targetAttribute' => ['company_id' => 'id']],
+            [['customer_id'], 'exist', 'skipOnError' => true, 'targetClass' => Customer::className(), 'targetAttribute' => ['customer_id' => 'id']],
         ];
     }
 
@@ -70,26 +70,26 @@ class User extends \yii\db\ActiveRecord implements \yii\web\IdentityInterface
             'can_insert_credits' => 'Pode inserir créditos',
             'can_see_reports' => 'Pode visualizar relatórios',
             'can_see_billing' => 'Pode ver faturas de pagamentos',
-            'company_id' => 'ID da empresa',
+            'customer_id' => 'ID da empresa',
         ];
     }
 
     /**
-     * Return an array of relations that can be expanded e.g. /user/5?expand=company
+     * Return an array of relations that can be expanded e.g. /user/5?expand=customer
      * 
      * @return array
      */
     public function extraFields()
     {
-        return ['company'];
+        return ['customer'];
     }
 
     /**
      * @return \yii\db\ActiveQuery
      */
-    public function getCompany()
+    public function getCustomer()
     {
-        return $this->hasOne(Company::className(), ['id' => 'company_id']);
+        return $this->hasOne(Customer::className(), ['id' => 'customer_id']);
     }
 
     /**
@@ -149,9 +149,9 @@ class User extends \yii\db\ActiveRecord implements \yii\web\IdentityInterface
     {
         if (parent::beforeSave($insert)) {
             if ($this->isNewRecord) {
-                $company = Company::findOne($this->company_id);
-                if (count($company->users) >= $company->max_users) {
-                    throw new ForbiddenHttpException("Máximo de usuários permitidos para essa empresa foi atingido. Usuários cadastrados: " . count($company->users));
+                $customer = Customer::findOne($this->customer_id);
+                if (count($customer->users) >= $customer->max_users) {
+                    throw new ForbiddenHttpException("Máximo de usuários permitidos para essa empresa foi atingido. Usuários cadastrados: " . count($customer->users));
                 }
 
                 $this->password = password_hash($this->password, PASSWORD_BCRYPT);

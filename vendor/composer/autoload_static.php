@@ -13,6 +13,8 @@ class ComposerStaticInit2cff35b77ba768570c0f04d1f088a355
     public static $prefixLengthsPsr4 = array (
         'y' => 
         array (
+            'yiibr\\brvalidator\\tests\\' => 24,
+            'yiibr\\brvalidator\\' => 18,
             'yii\\gii\\' => 8,
             'yii\\composer\\' => 13,
             'yii\\bootstrap\\' => 14,
@@ -25,6 +27,14 @@ class ComposerStaticInit2cff35b77ba768570c0f04d1f088a355
     );
 
     public static $prefixDirsPsr4 = array (
+        'yiibr\\brvalidator\\tests\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/yiibr/yii2-br-validator/tests',
+        ),
+        'yiibr\\brvalidator\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/yiibr/yii2-br-validator/src',
+        ),
         'yii\\gii\\' => 
         array (
             0 => __DIR__ . '/..' . '/yiisoft/yii2-gii/src',

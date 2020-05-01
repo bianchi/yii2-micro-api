@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "01eabe8e7f9aab21393f4a8c351001cf",
+    "content-hash": "99f04cc6fc23d5997685c90b7a87ccc3",
     "packages": [
         {
             "name": "bower-asset/inputmask",
@@ -187,6 +187,57 @@
                 "html"
             ],
             "time": "2019-10-28T03:44:26+00:00"
+        },
+        {
+            "name": "yiibr/yii2-br-validator",
+            "version": "1.1.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/yiibr/yii2-br-validator.git",
+                "reference": "8ecc0bbf38819719b6e83103c0bd7c99c717813a"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/yiibr/yii2-br-validator/zipball/8ecc0bbf38819719b6e83103c0bd7c99c717813a",
+                "reference": "8ecc0bbf38819719b6e83103c0bd7c99c717813a",
+                "shasum": ""
+            },
+            "require": {
+                "yiisoft/yii2": "~2.0.13"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "~4.4"
+            },
+            "type": "yii2-extension",
+            "autoload": {
+                "psr-4": {
+                    "yiibr\\brvalidator\\": "src",
+                    "yiibr\\brvalidator\\tests\\": "tests"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "BSD-3-Clause"
+            ],
+            "authors": [
+                {
+                    "name": "Leandro Guindani Gehlen",
+                    "email": "leandrogehlen@gmail.com"
+                }
+            ],
+            "description": "Provide validations and features for brazilian localization",
+            "keywords": [
+                "br",
+                "brasil",
+                "brazil",
+                "cei",
+                "cnpj",
+                "cpf",
+                "model",
+                "validator",
+                "yii"
+            ],
+            "time": "2019-09-12T16:47:59+00:00"
         },
         {
             "name": "yiisoft/yii2",

@@ -23,18 +23,25 @@ $config = [
                         'GET {user_id}/orders' => 'orders'
                     ],
                     'tokens' => [
+                        '{id}' => '<id:\\w+>',
                         '{user_id}' => '<user_id:\\w+>'
                     ]
                 ],
                 [
                     'class' => 'yii\rest\UrlRule', 
-                    'controller' => 'company',
+                    'controller' => 'customer',
                     'extraPatterns' => [
-                        'GET {company_id}/orders' => 'orders'
+                        'GET {customer_id}/orders' => 'orders',
+                        'GET {customer_id}/financial-transactions' => 'financial-transactions'
                     ],
                     'tokens' => [
-                        '{company_id}' => '<company_id:\\w+>'
+                        '{id}' => '<id:\\w+>',
+                        '{customer_id}' => '<customer_id:\\w+>'
                     ]
+                ],
+                [
+                    'class' => 'yii\rest\UrlRule', 
+                    'controller' => 'order',
                 ],
             ],
         ],

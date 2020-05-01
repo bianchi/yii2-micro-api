@@ -6,6 +6,8 @@ $vendorDir = dirname(dirname(__FILE__));
 $baseDir = dirname($vendorDir);
 
 return array(
+    'yiibr\\brvalidator\\tests\\' => array($vendorDir . '/yiibr/yii2-br-validator/tests'),
+    'yiibr\\brvalidator\\' => array($vendorDir . '/yiibr/yii2-br-validator/src'),
     'yii\\gii\\' => array($vendorDir . '/yiisoft/yii2-gii/src'),
     'yii\\composer\\' => array($vendorDir . '/yiisoft/yii2-composer'),
     'yii\\bootstrap\\' => array($vendorDir . '/yiisoft/yii2-bootstrap/src'),
