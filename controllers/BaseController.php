@@ -40,11 +40,16 @@ class BaseController extends ActiveController
     public function behaviors()
     {
         $behaviors = parent::behaviors();
-        $behaviors['authenticator'] = [
-            'class' => HttpBearerAuth::className(),
-            'except' => ['login'],
+
+        $behaviors['corsFilter'] = [
+            'class' => \yii\filters\Cors::className(),
         ];
         
+        $behaviors['authenticator'] = [
+            'class' => HttpBearerAuth::className(),
+            'except' => ['login', 'options'],
+        ];
+
         return $behaviors;
     }
 }
