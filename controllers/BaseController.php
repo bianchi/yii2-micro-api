@@ -53,7 +53,7 @@ class BaseController extends ActiveController
         
         $behaviors['authenticator'] = [
             'class' => HttpBearerAuth::className(),
-            'except' => ['login'],
+            'except' => ['login', 'options'],
         ];
 
         return $behaviors;
