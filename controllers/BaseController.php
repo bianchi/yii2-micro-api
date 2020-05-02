@@ -43,13 +43,13 @@ class BaseController extends ActiveController
     {
         $behaviors = parent::behaviors();
 
-        $behaviors['corsFilter'] = [
-            'class' => \yii\filters\Cors::className(),
-            // 'cors' => [
-            //     'Origin' => ['*'],
-            //     'Access-Control-Allow-Credentials' => true,
-            // ],
-        ];
+        // $behaviors['corsFilter'] = [
+        //     'class' => \yii\filters\Cors::className(),
+        //     // 'cors' => [
+        //     //     'Origin' => ['*'],
+        //     //     'Access-Control-Allow-Credentials' => true,
+        //     // ],
+        // ];
         
         $behaviors['authenticator'] = [
             'class' => HttpBearerAuth::className(),
