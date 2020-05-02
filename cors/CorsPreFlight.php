@@ -12,7 +12,6 @@ class CorsPreFlight extends Cors
         parent::beforeAction($action);
 
         if (Yii::$app->getRequest()->getMethod() === 'OPTIONS') {
-            Yii::$app->getResponse()->getHeaders()->set('Allow', 'POST GET PUT');
             Yii::$app->end();
         }
         return true;
