@@ -50,7 +50,7 @@ class BaseController extends ActiveController
             'class' => Cors::className(),
             'cors' => [
                 [
-                    'Access-Control-Expose-Headers' => ['X-Pagination-Total-Count','X-Pagination-Page-Count', 'X-Pagination-Current-Page', 'X-Pagination-Per-Page'],
+                    // 'Access-Control-Expose-Headers' => ['X-Pagination-Total-Count','X-Pagination-Page-Count', 'X-Pagination-Current-Page', 'X-Pagination-Per-Page'],
                 ]
             ]
         ];
