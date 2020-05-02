@@ -45,8 +45,20 @@ class UserController extends BaseController
             throw new \yii\web\ForbiddenHttpException('Current logged user don\'t have permission to delete users, it\'s not an admin');
         }
 
-        if ($action === 'update' && !$user->is_admin &&  $model != null && $model->id != \Yii::$app->user->id) {
-            throw new \yii\web\ForbiddenHttpException('Current logged user don\'t have permission to update another user but himself, it\'s not an admin');
+        if ($action == 'view') {
+            if ($model->id != $user->customer_id) {
+                throw new ForbiddenHttpException('Users cannot view users from another customer');
+            }
+        }
+
+        if ($action == 'update') {
+            if ($model->id != $user->customer_id) {
+                throw new ForbiddenHttpException('Users cannot update users from another customer');
+            }
+
+            if (!$user->is_admin && $model != null && $model->id != \Yii::$app->user->id) {
+                throw new ForbiddenHttpException('Current logged user don\'t have permission to update another user but himself, it\'s not an admin');
+            }
         }
 
         if ($action == 'orders' && !$user->is_admin &&  $params['user_id'] != \Yii::$app->user->id) {

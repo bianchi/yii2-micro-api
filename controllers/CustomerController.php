@@ -32,6 +32,14 @@ class CustomerController extends BaseController
     {
         $user = User::findOne(\Yii::$app->user->id);
 
+        if ($action == 'view' && $model->id != $user->customer_id) {
+            throw new ForbiddenHttpException('Users can only view its own customer');
+        }
+
+        if ($action == 'update' && $model->id != $user->customer_id) {
+            throw new ForbiddenHttpException('Users can only update its own customer');
+        }
+
         if ($action == 'orders' || $action == 'orders-statistics') {
             if ($params['customer_id'] != $user->customer_id) {
                 throw new ForbiddenHttpException('Users can only list orders data from its own customer');
