@@ -41,12 +41,14 @@ class BaseController extends ActiveController
     {
         $behaviors = parent::behaviors();
 
-        // remove authentication filter
-        $auth = $behaviors['authenticator'];
-        unset($behaviors['authenticator']);
-
         $behaviors['corsFilter'] = [
             'class' => \yii\filters\Cors::className(),
+            'cors' => [
+                // restrict access to
+                'Origin' => ['*', '*:5000', 'http://localhost:5000', 'https://cbrdoc.netlify.app'],
+                'Access-Control-Allow-Credentials' => true,
+            ],
+
         ];
         
         $behaviors['authenticator'] = [
