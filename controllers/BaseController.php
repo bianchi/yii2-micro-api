@@ -55,7 +55,7 @@ class BaseController extends ActiveController
                     'Access-Control-Request-Headers' => ['*'], 
                     'Access-Control-Allow-Credentials' => null, 
                     'Access-Control-Max-Age' => 86400, 
-                    'Access-Control-Expose-Headers' => ['X-Pagination-Current-Page'],
+                    'Access-Control-Expose-Headers' => ['X-Pagination-Total-Count','X-Pagination-Page-Count', 'X-Pagination-Current-Page', 'X-Pagination-Per-Page'],
                 ]
             ]
         ];
