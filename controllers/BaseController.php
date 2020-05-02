@@ -48,11 +48,6 @@ class BaseController extends ActiveController
 
         $behaviors['corsFilter'] = [
             'class' => Cors::className(),
-            'cors' => [
-                [
-                    // 'Access-Control-Expose-Headers' => ['X-Pagination-Total-Count','X-Pagination-Page-Count', 'X-Pagination-Current-Page', 'X-Pagination-Per-Page'],
-                ]
-            ]
         ];
 
         $behaviors['authenticator'] = $auth;
