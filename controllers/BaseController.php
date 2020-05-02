@@ -22,7 +22,7 @@ class BaseController extends ActiveController
 
         if ($action->id != 'login') {
             echo "<pre>";
-            print_r($action);
+            print_r($action->id);
             echo "</pre>";
             exit();
             $user = User::findOne(\Yii::$app->user->id);
