@@ -31,10 +31,10 @@ $config = [
                     'class' => 'yii\rest\UrlRule', 
                     'controller' => 'customer',
                     'extraPatterns' => [
-                        'GET {customer_id}/orders' => 'orders',
-                        'GET {customer_id}/orders/stats' => 'orders-stats',
-                        'GET {customer_id}/invoices' => 'invoices',
-                        'GET {customer_id}/invoices/stats' => 'invoices-stats'
+                        'GET,OPTIONS {customer_id}/orders' => 'orders',
+                        'GET,OPTIONS {customer_id}/orders/stats' => 'orders-stats',
+                        'GET,OPTIONS {customer_id}/invoices' => 'invoices',
+                        'GET,OPTIONS {customer_id}/invoices/stats' => 'invoices-stats'
                     ],
                     'tokens' => [
                         '{id}' => '<id:\\w+>',
