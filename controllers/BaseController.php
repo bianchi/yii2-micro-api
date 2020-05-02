@@ -47,7 +47,6 @@ class BaseController extends ActiveController
             'class' => \yii\filters\Cors::className(),
             'cors' => [
                 // restrict access to
-                'Origin' => ['*', '*:5000', 'http://localhost:5000', 'https://cbrdoc.netlify.app'],
                 'Access-Control-Allow-Credentials' => true,
             ],
         ];
