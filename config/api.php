@@ -32,7 +32,9 @@ $config = [
                     'controller' => 'customer',
                     'extraPatterns' => [
                         'GET {customer_id}/orders' => 'orders',
-                        'GET {customer_id}/financial-transactions' => 'financial-transactions'
+                        'GET {customer_id}/orders/stats' => 'orders-stats',
+                        'GET {customer_id}/invoices' => 'invoices',
+                        'GET {customer_id}/invoices/stats' => 'invoices-stats'
                     ],
                     'tokens' => [
                         '{id}' => '<id:\\w+>',

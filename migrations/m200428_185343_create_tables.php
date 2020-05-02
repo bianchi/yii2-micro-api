@@ -33,7 +33,7 @@ class m200428_185343_create_tables extends Migration
             'can_order_document' => $this->boolean()->notNull()->defaultValue(false),
             'can_insert_credits' => $this->boolean()->notNull()->defaultValue(false),
             'can_see_reports' => $this->boolean()->notNull()->defaultValue(false),
-            'can_see_financial_transactions' => $this->boolean()->notNull()->defaultValue(false),
+            'can_see_invoices' => $this->boolean()->notNull()->defaultValue(false),
             'customer_id' => $this->integer()->notNull()
         ]);
 
@@ -154,52 +154,54 @@ class m200428_185343_create_tables extends Migration
             'id'
         );
 
-        $this->createTable('financial_transactions', [
+        $this->createTable('invoices', [
             'id' => $this->bigPrimaryKey()->notNull(),
             'customer_id' => $this->integer()->notNull(),
             'user_id' => $this->integer()->notNull(),
             'order_id' => $this->bigInteger(),
             'operation' => "ENUM('C', 'D') NOT NULL",
+            'placed_time' => $this->dateTime()->notNull()->defaultExpression('CURRENT_TIMESTAMP'),
+            'approved_time' => $this->dateTime(),
             'amount' => $this->double()->notNull(),
         ]);
 
         $this->createIndex(
-            'idx-financial_transactions-customer_id',
-            'financial_transactions',
+            'idx-invoices-customer_id',
+            'invoices',
             'customer_id'
         );
 
         $this->addForeignKey(
-            'fk-financial_transactions-customer_id',
-            'financial_transactions',
+            'fk-invoices-customer_id',
+            'invoices',
             'customer_id',
             'customers',
             'id'
         );
 
         $this->createIndex(
-            'idx-financial_transactions-user_id',
-            'financial_transactions',
+            'idx-invoices-user_id',
+            'invoices',
             'user_id'
         );
 
         $this->addForeignKey(
-            'fk-financial_transactions-user_id',
-            'financial_transactions',
+            'fk-invoices-user_id',
+            'invoices',
             'user_id',
             'users',
             'id'
         );
 
         $this->createIndex(
-            'idx-financial_transactions-order_id',
-            'financial_transactions',
+            'idx-invoices-order_id',
+            'invoices',
             'order_id'
         );
 
         $this->addForeignKey(
-            'fk-financial_transactions-order_id',
-            'financial_transactions',
+            'fk-invoices-order_id',
+            'invoices',
             'order_id',
             'orders',
             'id'
@@ -356,50 +358,62 @@ class m200428_185343_create_tables extends Migration
             'status_id' => 1
         ]);
 
-        $this->insert('financial_transactions', [
+        $this->insert('invoices', [
             'user_id' => 1,
             'customer_id' => 1,
             'amount' => 3000,
-            'operation' => 'C'
+            'operation' => 'C',
+            'placed_time' => date('Y-m-d H:i:s'),
+            'approved_time' => date('Y-m-d H:i:s'),
         ]);
 
-        $this->insert('financial_transactions', [
+        $this->insert('invoices', [
             'user_id' => 1,
             'customer_id' => 1,
             'order_id' => 1,
             'amount' => 100,
-            'operation' => 'D'
+            'operation' => 'D',
+            'placed_time' => date('Y-m-d H:i:s'),
+            'approved_time' => date('Y-m-d H:i:s'),
         ]);
 
-        $this->insert('financial_transactions', [
+        $this->insert('invoices', [
             'user_id' => 1,
             'customer_id' => 1,
             'order_id' => 2,
             'amount' => 175.80,
-            'operation' => 'D'
+            'operation' => 'D',
+            'placed_time' => date('Y-m-d H:i:s'),
+            'approved_time' => date('Y-m-d H:i:s'),
         ]);
 
-        $this->insert('financial_transactions', [
+        $this->insert('invoices', [
             'user_id' => 2,
             'customer_id' => 1,
             'order_id' => 3,
             'amount' => 45,
-            'operation' => 'D'
+            'operation' => 'D',
+            'placed_time' => date('Y-m-d H:i:s'),
+            'approved_time' => date('Y-m-d H:i:s'),
         ]);
 
-        $this->insert('financial_transactions', [
+        $this->insert('invoices', [
             'user_id' => 3,
             'customer_id' => 2,
             'amount' => 100,
-            'operation' => 'C'
+            'operation' => 'C',
+            'placed_time' => date('Y-m-d H:i:s'),
+            'approved_time' => date('Y-m-d H:i:s'),
         ]);
 
-        $this->insert('financial_transactions', [
+        $this->insert('invoices', [
             'user_id' => 3,
             'customer_id' => 2,
             'order_id' => 3,
             'amount' => 95,
-            'operation' => 'D'
+            'operation' => 'D',
+            'placed_time' => date('Y-m-d H:i:s'),
+            'approved_time' => date('Y-m-d H:i:s'),
         ]);
     }
 
@@ -412,9 +426,9 @@ class m200428_185343_create_tables extends Migration
             'orders' => 'fk-orders-current_status_id',
             'order_history' => 'fk-order_history-order_id',
             'order_history' => 'fk-order_history-status_id',
-            'financial_transactions' => 'fk-financial_transactions-customer_id',
-            'financial_transactions' => 'fk-financial_transactions-user_id',
-            'financial_transactions' => 'fk-financial_transactions-order_id',
+            'invoices' => 'fk-invoices-customer_id',
+            'invoices' => 'fk-invoices-user_id',
+            'invoices' => 'fk-invoices-order_id',
         ];
 
         foreach ($foreignKeys as $table => $name) {
@@ -429,9 +443,9 @@ class m200428_185343_create_tables extends Migration
             'orders' => 'idx-orders-current_status_id',
             'order_history' => 'idx-order_history-order_id',
             'order_history' => 'idx-order_history-status_id',
-            'financial_transactions' => 'idx-financial_transactions-customer_id',
-            'financial_transactions' => 'idx-financial_transactions-user_id',
-            'financial_transactions' => 'idx-financial_transactions-order_id',
+            'invoices' => 'idx-invoices-customer_id',
+            'invoices' => 'idx-invoices-user_id',
+            'invoices' => 'idx-invoices-order_id',
         ];
 
         foreach ($indexes as $table => $name) {
@@ -439,7 +453,7 @@ class m200428_185343_create_tables extends Migration
         }
 
 
-        $tables = ['financial_transactions', 'order_history', 'orders', 'order_statuses', 'document_types', 'users', 'customers'];
+        $tables = ['invoices', 'order_history', 'orders', 'order_statuses', 'document_types', 'users', 'customers'];
 
         foreach ($tables as $table) {
             $this->dropTable($table);

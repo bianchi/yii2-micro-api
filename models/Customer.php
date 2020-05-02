@@ -2,7 +2,7 @@
 
 namespace api\models;
 
-use app\models\FinancialTransaction;
+use app\models\Invoice;
 use yiibr\brvalidator\CnpjValidator;
 use yiibr\brvalidator\CpfValidator;
 
@@ -81,21 +81,49 @@ class Customer extends \yii\db\ActiveRecord
     /**
      * @return \yii\db\ActiveQuery
      */
-    public function getFinancialTransactions()
+    public function getInvoices()
     {
-        return $this->hasMany(FinancialTransaction::className(), ['customer_id' => 'id']);
+        return $this->hasMany(Invoice::className(), ['customer_id' => 'id']);
+    }
+
+    public function getInvoiceCreditsBetweenDates($beginDate, $endDate)
+    {
+        return Invoice::find()
+            ->where(['customer_id' => $this->id])
+            ->andWhere(['operation' => Invoice::OPERATION_CREDIT])
+            ->andWhere(['between', 'placed_time', $beginDate, $endDate])
+            ->sum('amount');
+    }
+
+    public function getInvoiceDebitsBetweenDates($beginDate, $endDate)
+    {
+        return Invoice::find()
+            ->where(['customer_id' => $this->id])
+            ->andWhere(['operation' => Invoice::OPERATION_DEBIT])
+            ->andWhere(['between', 'placed_time', $beginDate, $endDate])
+            ->sum('amount');
     }
 
     public function getAccountBalance()
     {
-        $totalCredits = FinancialTransaction::find()->where(['customer_id' => $this->id, 'operation' => FinancialTransaction::OPERATION_CREDIT])->sum('amount');
-        $totalDedits = FinancialTransaction::find()->where(['customer_id' => $this->id, 'operation' => FinancialTransaction::OPERATION_DEBIT])->sum('amount');
+        $totalCredits = Invoice::find()
+            ->where(['customer_id' => $this->id])
+            ->andWhere(['operation' => Invoice::OPERATION_CREDIT])
+            ->andWhere(['IS NOT', 'approved_time', null])
+            ->sum('amount');
 
-        return bcsub($totalCredits, $totalDedits, 2);
+
+        $totalDebits = Invoice::find()
+            ->where(['customer_id' => $this->id])
+            ->andWhere(['operation' => Invoice::OPERATION_DEBIT])
+            ->andWhere(['IS NOT', 'approved_time', null])
+            ->sum('amount');
+
+        return bcsub($totalCredits, $totalDebits, 2);
     }
 
     public function getTotalOrders()
     {
-        return 2;
+        return Order::find()->joinWith(['user u'])->where(['u.customer_id' => $this->id])->count();
     }
 }

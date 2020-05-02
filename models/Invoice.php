@@ -8,7 +8,7 @@ use api\models\User;
 use Yii;
 
 /**
- * This is the model class for table "financial_transactions".
+ * This is the model class for table "invoices".
  *
  * @property int $customer_id
  * @property int $user_id
@@ -20,7 +20,7 @@ use Yii;
  * @property Orders $order
  * @property Users $user
  */
-class FinancialTransaction extends \yii\db\ActiveRecord
+class Invoice extends \yii\db\ActiveRecord
 {
     const OPERATION_CREDIT = 'C';
     const OPERATION_DEBIT = 'D';
@@ -30,7 +30,7 @@ class FinancialTransaction extends \yii\db\ActiveRecord
      */
     public static function tableName()
     {
-        return 'financial_transactions';
+        return 'invoices';
     }
 
     /**

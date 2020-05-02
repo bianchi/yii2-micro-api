@@ -41,6 +41,10 @@ class BaseController extends ActiveController
     {
         $behaviors = parent::behaviors();
 
+        // remove authentication filter
+        $auth = $behaviors['authenticator'];
+        unset($behaviors['authenticator']);
+
         $behaviors['corsFilter'] = [
             'class' => \yii\filters\Cors::className(),
         ];
