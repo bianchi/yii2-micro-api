@@ -21,10 +21,6 @@ class BaseController extends ActiveController
         }
 
         if ($action->id != 'login') {
-            echo "<pre>";
-            print_r($action);
-            echo "</pre>";
-            exit();
             $user = User::findOne(\Yii::$app->user->id);
 
             $currentDate = new \Datetime;
@@ -55,10 +51,10 @@ class BaseController extends ActiveController
         //     // ],
         // ];
         
-        // $behaviors['authenticator'] = [
-        //     'class' => HttpBearerAuth::className(),
-        //     'except' => ['login'],
-        // ];
+        $behaviors['authenticator'] = [
+            'class' => HttpBearerAuth::className(),
+            'except' => ['login'],
+        ];
 
         return $behaviors;
     }
