@@ -23,8 +23,7 @@ $config = [
                         'GET {user_id}/orders' => 'orders'
                     ],
                     'tokens' => [
-                        // '{id}' => '<id:\\w+>',
-                        // '{user_id}' => '<user_id:\\w+>'
+                        '{user_id}' => '<user_id:\\w+>'
                     ]
                 ],
                 [
