@@ -23,7 +23,7 @@ class CustomerController extends BaseController
         $actions = parent::actions();
 
         // disable the "delete" action in this endpoint
-        unset($actions['delete'], $actions['index']);
+        unset($actions['delete']);
 
         return $actions;
     }
