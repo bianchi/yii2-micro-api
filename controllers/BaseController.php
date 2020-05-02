@@ -6,6 +6,7 @@ use yii\filters\auth\HttpBearerAuth;
 use yii\rest\ActiveController;
 use yii\web\ForbiddenHttpException;
 use api\models\User;
+use CorsPreFlight;
 use yii\web\UnauthorizedHttpException;
 
 class BaseController extends ActiveController
@@ -47,7 +48,7 @@ class BaseController extends ActiveController
         unset($behaviors['authenticator']);
 
         $behaviors['corsFilter'] = [
-            'class' => \yii\filters\Cors::className(),
+            'class' => CorsPreFlight::className(),
         ];
 
         $behaviors['authenticator'] = $auth;
