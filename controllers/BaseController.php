@@ -6,7 +6,7 @@ use yii\filters\auth\HttpBearerAuth;
 use yii\rest\ActiveController;
 use yii\web\ForbiddenHttpException;
 use api\models\User;
-use CorsPreFlight;
+use api\cors\CorsPreFlight;
 use yii\web\UnauthorizedHttpException;
 
 class BaseController extends ActiveController
