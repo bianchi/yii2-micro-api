@@ -46,7 +46,7 @@ class BaseController extends ActiveController
         $behaviors['corsFilter'] = [
             'class' => \yii\filters\Cors::className(),
             'cors' => [
-                // restrict access to
+                'Origin' => ['*'],
                 'Access-Control-Allow-Credentials' => true,
             ],
         ];
