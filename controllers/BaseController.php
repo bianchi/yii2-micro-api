@@ -46,6 +46,7 @@ class BaseController extends ActiveController
             'cors' => [
                 // restrict access to
                 'Origin' => ['*', '*:5000', 'http://localhost:5000', 'https://cbrdoc.netlify.app'],
+                'Access-Control-Request-Headers' => ['*'],
                 'Access-Control-Allow-Credentials' => true,
             ],
 
