@@ -10,7 +10,7 @@ use yii\web\UnauthorizedHttpException;
 
 class BaseController extends ActiveController
 {
-    public $enableCsrfValidation = false;
+    // public $enableCsrfValidation = false;
     
     const TOKEN_DURATION_MINUTES = 600;
 
