@@ -20,7 +20,8 @@ $config = [
                     'controller' => 'user', 
                     'extraPatterns' => [
                         'POST login' => 'login',
-                        'GET {user_id}/orders' => 'orders'
+                        'GET {user_id}/orders' => 'orders',
+                        'OPTIONS {user_id}/orders' => 'orders'
                     ],
                     'tokens' => [
                         '{id}' => '<id:\\w+>',
