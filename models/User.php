@@ -168,4 +168,15 @@ class User extends \yii\db\ActiveRecord implements \yii\web\IdentityInterface
 
         return parent::afterSave($insert, $changedAttributes);
     }
+
+    public function afterFind()
+    {
+        $this->is_admin = boolval($this->is_admin);
+        $this->can_insert_credits = boolval($this->can_insert_credits);
+        $this->can_order_document = boolval($this->can_order_document);
+        $this->can_see_financial_transactions = boolval($this->can_see_financial_transactions);
+        $this->can_see_reports = boolval($this->can_see_reports);
+
+        return parent::afterFind();
+    }
 }
