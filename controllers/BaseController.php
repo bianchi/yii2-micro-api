@@ -46,17 +46,17 @@ class BaseController extends ActiveController
         $auth = $behaviors['authenticator'];
         unset($behaviors['authenticator']);
 
-        $behaviors['corsFilter'] = [
-            'class' => Cors::className(),
-            'cors' => [
-                [
-                    'Access-Control-Expose-Headers' => ['X-Pagination-Total-Count','X-Pagination-Page-Count', 'X-Pagination-Current-Page', 'X-Pagination-Per-Page'],
-                ]
-            ]
-        ];
+        // $behaviors['corsFilter'] = [
+        //     'class' => Cors::className(),
+        //     'cors' => [
+        //         [
+        //             'Access-Control-Expose-Headers' => ['X-Pagination-Total-Count','X-Pagination-Page-Count', 'X-Pagination-Current-Page', 'X-Pagination-Per-Page'],
+        //         ]
+        //     ]
+        // ];
 
         $behaviors['authenticator'] = $auth;
-        $behaviors['authenticator']['except'] = ['options','head'];
+        $behaviors['authenticator']['except'] = ['options'];
         
         $behaviors['authenticator'] = [
             'class' => HttpBearerAuth::className(),
