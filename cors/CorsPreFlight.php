@@ -3,6 +3,7 @@
 namespace api\cors;
 
 use yii\filters\Cors;
+use Yii;
 
 class CorsPreFlight extends Cors
 {
