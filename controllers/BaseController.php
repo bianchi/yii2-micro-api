@@ -10,7 +10,7 @@ use yii\web\UnauthorizedHttpException;
 
 class BaseController extends ActiveController
 {
-    // public $enableCsrfValidation = false;
+    public $enableCsrfValidation = false;
     
     const TOKEN_DURATION_MINUTES = 600;
 
@@ -22,7 +22,7 @@ class BaseController extends ActiveController
 
         if ($action->id != 'login') {
             echo "<pre>";
-            print_r($action->id);
+            print_r($action);
             echo "</pre>";
             exit();
             $user = User::findOne(\Yii::$app->user->id);
