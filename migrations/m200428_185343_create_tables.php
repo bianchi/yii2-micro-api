@@ -207,6 +207,27 @@ class m200428_185343_create_tables extends Migration
             'id'
         );
 
+        $this->createTable('password_reset', [
+            'token' => "varchar(255) primary key not null",
+            'user_id' => $this->integer()->notNull(),
+            'expiration_time' => $this->datetime()->notNull(),
+            'already_used' => $this->boolean()->notNull()->defaultValue(false)
+        ]);
+
+        $this->createIndex(
+            'idx-password_reset-user_id',
+            'password_reset',
+            'user_id'
+        );
+
+        $this->addForeignKey(
+            'fk-password_reset-user_id',
+            'password_reset',
+            'user_id',
+            'users',
+            'id'
+        );
+
         $this->populate();
 
         if (YII_ENV_DEV) {
@@ -429,6 +450,7 @@ class m200428_185343_create_tables extends Migration
             'invoices' => 'fk-invoices-customer_id',
             'invoices' => 'fk-invoices-user_id',
             'invoices' => 'fk-invoices-order_id',
+            'password_reset' => 'fk-password_reset-user_id'
         ];
 
         foreach ($foreignKeys as $table => $name) {
@@ -446,6 +468,7 @@ class m200428_185343_create_tables extends Migration
             'invoices' => 'idx-invoices-customer_id',
             'invoices' => 'idx-invoices-user_id',
             'invoices' => 'idx-invoices-order_id',
+            'password_reset' => 'idx-password_reset-user_id'
         ];
 
         foreach ($indexes as $table => $name) {

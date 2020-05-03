@@ -37,13 +37,20 @@ $config = [
                         'GET,OPTIONS {customer_id}/invoices/stats' => 'invoices-stats'
                     ],
                     'tokens' => [
-                        '{id}' => '<id:\\w+>',
+                        // '{id}' => '<id/:\\w+>', // acho que não precisa disso
                         '{customer_id}' => '<customer_id:\\w+>'
                     ]
                 ],
                 [
                     'class' => 'yii\rest\UrlRule', 
-                    'controller' => 'order',
+                    'controller' => 'password-reset',
+                    'pluralize' => false,
+                    'extraPatterns' => [
+                        'GET {id}' => 'view'
+                    ],
+                    'tokens' => [
+                        '{id}' => '<id:\\w+>',
+                    ]
                 ],
             ],
         ],

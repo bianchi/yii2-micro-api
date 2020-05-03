@@ -12,20 +12,31 @@ use yii\web\UnauthorizedHttpException;
 
 class BaseController extends ActiveController
 {
-    const TOKEN_DURATION_MINUTES = 600;
-
     public function beforeAction($action)
     {
+        $noAuthenticationRoutes = [
+            'user/login',
+            'password-reset/create',
+            'password-reset/view'
+        ];
+
         if (!parent::beforeAction($action)) {
             return false;
         }
 
-        if ($action->id != 'login') {
+        $requestedRoute = $action->controller->module->requestedRoute;
+
+        // if requested route needs authentication, checks token
+        if (!in_array($requestedRoute, $noAuthenticationRoutes)) {
             $user = User::findOne(\Yii::$app->user->id);
+
+            if ($user == null) {
+                throw new UnauthorizedHttpException('No logged user');
+            }
 
             $currentDate = new \Datetime;
             $tokenExpirationDate = new \Datetime($user->last_api_request);
-            $tokenExpirationDate->modify('+' . self::TOKEN_DURATION_MINUTES . ' minutes');
+            $tokenExpirationDate->modify('+' . User::LOGIN_TOKEN_DURATION_MINUTES . ' minutes');
 
             if ($currentDate > $tokenExpirationDate) {
                 throw new UnauthorizedHttpException("Token has expired, please login again.");
@@ -46,18 +57,16 @@ class BaseController extends ActiveController
         $auth = $behaviors['authenticator'];
         unset($behaviors['authenticator']);
 
-        // $behaviors['corsFilter'] = [
-        //     'class' => Cors::className(),
-        //     'cors' => [
-        //         [
-        //             'Access-Control-Expose-Headers' => ['X-Pagination-Total-Count','X-Pagination-Page-Count', 'X-Pagination-Current-Page', 'X-Pagination-Per-Page'],
-        //         ]
-        //     ]
-        // ];
+        $behaviors['corsFilter'] = [
+            'class' => Cors::className(),
+            // 'cors' => [
+            //     [
+            //         'Access-Control-Expose-Headers' => ['X-Pagination-Total-Count','X-Pagination-Page-Count', 'X-Pagination-Current-Page', 'X-Pagination-Per-Page'],
+            //     ]
+            // ]
+        ];
 
         $behaviors['authenticator'] = $auth;
-        $behaviors['authenticator']['except'] = ['options'];
-        
         $behaviors['authenticator'] = [
             'class' => HttpBearerAuth::className(),
             'except' => ['login', 'options'],

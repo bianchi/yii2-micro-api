@@ -5,7 +5,11 @@ namespace api\controllers;
 use api\models\Order;
 use api\models\search\OrderSearch;
 use api\models\User;
+use app\models\PasswordReset;
+use yii\web\BadRequestHttpException;
 use yii\web\ForbiddenHttpException;
+use yii\web\NotFoundHttpException;
+use yii\web\ServerErrorHttpException;
 
 class UserController extends BaseController
 {
@@ -69,7 +73,7 @@ class UserController extends BaseController
      /**
      * Check user email/password, if ok generates an access_token
      *
-     * @return User $user
+     * @return User $user with access_token
      * @throws ForbiddenHttpException If user doesn't exist or password is wrong
      */
     public function actionLogin()
@@ -81,9 +85,11 @@ class UserController extends BaseController
         if ($user != null && password_verify($body['password'], $user->password)) {
             $user->scenario = User::SCENARIO_LOGIN;
 
+            $token = preg_replace("/[^a-zA-Z0-9]/", "", \Yii::$app->security->generateRandomString());
+
             $currentDateTime = date('Y-m-d H:i:s');
             $user->updateAttributes([
-                'access_token' => \Yii::$app->security->generateRandomString(),
+                'access_token' => $token,
                 'last_login' => $currentDateTime,
                 'last_api_request' => $currentDateTime,
             ]);
