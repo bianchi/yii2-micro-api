@@ -4,6 +4,7 @@ namespace api\models;
 
 use Yii;
 use api\models\User;
+use yii\web\NotAcceptableHttpException;
 
 /**
  * This is the model class for table "password_reset".
@@ -60,18 +61,16 @@ class PasswordReset extends \yii\db\ActiveRecord
         return parent::afterFind();
     }
 
-    public function fields()
-    {
-        $fields = parent::fields();
-
-        return $fields;
-    }
-
-    public function getValid()
+    public function checkValid()
     {
         $currentTime = new \Datetime;
         $tokenExpiration = new \Datetime($this->expiration_time);
+        if ($tokenExpiration < $currentTime) {
+            throw new NotAcceptableHttpException("Token has expired");
+        }
 
-        return (!$this->already_used && $tokenExpiration > $currentTime);
+        if ($this->already_used) {
+            throw new NotAcceptableHttpException("Token already used");
+        }
     }
 }

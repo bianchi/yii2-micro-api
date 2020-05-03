@@ -5,6 +5,7 @@ namespace api\controllers;
 use api\models\PasswordReset;
 use api\models\User;
 use yii\web\BadRequestHttpException;
+use yii\web\ForbiddenHttpException;
 use yii\web\NotAcceptableHttpException;
 use yii\web\NotFoundHttpException;
 use yii\web\ServerErrorHttpException;
@@ -85,16 +86,32 @@ class PasswordResetController extends BaseController
             throw new NotFoundHttpException("Token not found");
         }
 
-        $currentTime = new \Datetime;
-        $tokenExpiration = new \Datetime($model->expiration_time);
-        if ($tokenExpiration < $currentTime) {
-            throw new NotAcceptableHttpException("Token has expired");
-        }
-
-        if ($model->already_used) {
-            throw new NotAcceptableHttpException("Token already used");
-        }
+        $model->checkValid();
 
         return $model;
+    }
+
+    public function actionChangePassword($id)
+    {
+        $passwordReset = PasswordReset::findOne($id);
+        $passwordReset->checkValid();
+
+        $body = \Yii::$app->getRequest()->getBodyParams();
+        if (empty($body['password'])) {
+            throw new BadRequestHttpException("Missing body parameter 'password'");
+        }
+
+        $user = User::findOne($passwordReset->user_id);
+        if ($user == null) {
+            throw new NotFoundHttpException("User not found");
+        }
+
+        $user->password = password_hash($body['password'], PASSWORD_BCRYPT);
+        $user->updateAttributes(['password']);
+
+        $passwordReset->already_used = true;
+        $passwordReset->updateAttributes(['already_used']);
+
+        \Yii::$app->response->statusCode = 204;
     }
 }

@@ -46,7 +46,8 @@ $config = [
                     'controller' => 'password-reset',
                     'pluralize' => false,
                     'extraPatterns' => [
-                        'GET {id}' => 'view'
+                        'GET {id}' => 'view',
+                        'PATCH {id}/change-password' => 'change-password'
                     ],
                     'tokens' => [
                         '{id}' => '<id:\\w+>',

@@ -17,7 +17,7 @@ use yii\web\ForbiddenHttpException;
  * @property int $can_order_document
  * @property int $can_insert_credits
  * @property int $can_see_reports
- * @property int $can_see_billing
+ * @property int $can_see_invoices
  * @property int $customer_id
  *
  * @property Customer $customer
@@ -44,7 +44,7 @@ class User extends \yii\db\ActiveRecord implements \yii\web\IdentityInterface
         return [
             [['name', 'email', 'password', 'customer_id', 'phone'], 'required'],
             [['last_login', 'last_api_request'], 'safe'],
-            [['is_admin', 'can_order_document', 'can_insert_credits', 'can_see_reports', 'can_see_billing'], 'boolean'],
+            [['is_admin', 'can_order_document', 'can_insert_credits', 'can_see_reports', 'can_see_invoices'], 'boolean'],
             [['customer_id'], 'integer'],
             [['name'], 'string', 'max' => 60],
             [['email'], 'email'],
@@ -72,7 +72,7 @@ class User extends \yii\db\ActiveRecord implements \yii\web\IdentityInterface
             'can_order_document' => 'Pode requisitar documentos',
             'can_insert_credits' => 'Pode inserir créditos',
             'can_see_reports' => 'Pode visualizar relatórios',
-            'can_see_billing' => 'Pode ver faturas de pagamentos',
+            'can_see_invoices' => 'Pode ver faturas de pagamentos',
             'customer_id' => 'ID da empresa',
         ];
     }
