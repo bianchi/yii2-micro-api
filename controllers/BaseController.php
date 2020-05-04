@@ -6,10 +6,12 @@ use yii\filters\auth\HttpBearerAuth;
 use yii\rest\ActiveController;
 use yii\web\ForbiddenHttpException;
 use api\models\User;
-use api\cors\CorsPreFlight;
 use yii\filters\Cors;
 use yii\web\UnauthorizedHttpException;
 
+/**
+ * @OA\Info(title="CBR Docs", version="0.1")
+ */
 class BaseController extends ActiveController
 {
     public function beforeAction($action)

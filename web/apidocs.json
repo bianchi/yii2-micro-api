@@ -1,0 +1,97 @@
+openapi: 3.0.0
+info:
+  title: 'CBR Docs'
+  version: '0.1'
+paths:
+  /users/login:
+    post:
+      tags:
+        - users
+      summary: 'Check user email/password, if ok generates an access_token.'
+      operationId: 'api\controllers\UserController::actionLogin'
+      requestBody:
+        description: 'Request body'
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              properties:
+                email:
+                  description: 'User''s email'
+                  type: string
+                password:
+                  description: 'User''s password'
+                  type: string
+              type: object
+      responses:
+        '200':
+          description: 'User object with the access_token'
+        '400':
+          description: 'Missing body parameters'
+        '403':
+          description: 'User doesn\''t exist or password is incorrect'
+  '/users/{user_id}':
+    get:
+      tags:
+        - users
+      summary: 'Gets specific user information'
+      operationId: 'api\controllers\UserController::actionView'
+      parameters:
+        -
+          name: user_id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: 'User object'
+        '403':
+          description: 'Users cannot view users from another customer \n ahsduhasd'
+  /users:
+    post:
+      tags:
+        - users
+      summary: 'Creates a new user'
+      operationId: 'api\controllers\UserController::actionCreate'
+      requestBody:
+        description: 'Request body'
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              properties:
+                customer_id:
+                  description: 'ID of the customer whom the user will belong'
+                  type: string
+                name:
+                  description: 'User''s name'
+                  type: string
+                phone:
+                  description: 'User''s phone'
+                  type: integer
+                email:
+                  description: 'User''s email'
+                  type: string
+                password:
+                  description: 'User''s password'
+                  type: string
+                is_admin:
+                  description: 'Whether user is an admin'
+                  type: boolean
+                can_order_document:
+                  description: 'Whether user can order documents/searchs'
+                  type: boolean
+                can_insert_credits:
+                  description: 'Whether user can insert credits'
+                  type: boolean
+                can_see_reports:
+                  description: 'Whether user can see reports'
+                  type: boolean
+                can_see_invoices:
+                  description: 'Whether user can see invoices'
+                  type: boolean
+              type: object
+      responses:
+        '200':
+          description: 'User object'
+        '403':
+          description: 'Users cannot view users from another customer'

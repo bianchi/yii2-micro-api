@@ -50,7 +50,6 @@ class PasswordResetController extends BaseController
     public function actionCreate()
     {
         $body = \Yii::$app->getRequest()->getBodyParams();
-
         if (empty($body['email'])) {
             throw new BadRequestHttpException("Missing body parameter 'email'");
         }

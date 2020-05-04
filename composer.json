@@ -4,6 +4,7 @@
         "yiibr/yii2-br-validator": "^1.0"
     },
     "require-dev": {
+        "zircote/swagger-php": "*",
         "yiisoft/yii2-gii": "~2.0.0"
     },
     "repositories": [

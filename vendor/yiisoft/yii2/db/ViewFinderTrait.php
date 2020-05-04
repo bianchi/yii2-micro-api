@@ -11,7 +11,7 @@ namespace yii\db;
  * ViewFinderTrait implements the method getViewNames for finding views in a database.
  *
  * @author Qiang Xue <qiang.xue@gmail.com>
- * @author Bob Olde Hampsink <b.oldehampsink@nerds.customer>
+ * @author Bob Olde Hampsink <b.oldehampsink@nerds.company>
  * @since 2.0.12
  */
 trait ViewFinderTrait
