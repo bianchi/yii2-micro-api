@@ -71,7 +71,7 @@ class UserController extends BaseController
         }
     }
 
-     /**
+    /**
      *  @OA\Post(
      *      path="/users/login",
      *      summary="Check user email/password, if ok generates an access_token.",
@@ -82,6 +82,7 @@ class UserController extends BaseController
      *             mediaType="application/x-www-form-urlencoded",
      *             @OA\Schema(
      *                 type="object",
+     *                 required={"email", "password"},
      *                 @OA\Property(
      *                     property="email",
      *                     description="User's email",
@@ -148,14 +149,21 @@ class UserController extends BaseController
     }
 
 
-     /**
+    /**
      *  @OA\Get(
      *     path="/users/{user_id}",
      *     summary="Gets specific user information",
      *     tags={"users"},
      *     @OA\Parameter(name="user_id",
+     *          description="ID of the user",
      *          in="path",
      *          required=true,
+     *          @OA\Schema(type="integer")
+     *     ),
+     *     @OA\Parameter(name="expand",
+     *          description="Relations to expand separeted by comma (Customer)",
+     *          in="query",
+     *          required=false,
      *          @OA\Schema(type="string")
      *     ),
      *     @OA\Response(response=200,description="User object"),
@@ -175,6 +183,7 @@ class UserController extends BaseController
      *             mediaType="application/x-www-form-urlencoded",
      *             @OA\Schema(
      *                 type="object",
+     *                 required={"customer_id", "name", "phone", "email", "password"},
      *                 @OA\Property(
      *                     property="customer_id",
      *                     description="ID of the customer whom the user will belong",
@@ -198,12 +207,12 @@ class UserController extends BaseController
      *                 @OA\Property(
      *                     property="password",
      *                     description="User's password",
-     *                     type="string"
+     *                     type="string",
      *                 ),
      *                 @OA\Property(
      *                     property="is_admin",
      *                     description="Whether user is an admin",
-     *                     type="boolean"
+     *                     type="boolean",
      *                 ),
      *                 @OA\Property(
      *                     property="can_order_document",
@@ -229,9 +238,99 @@ class UserController extends BaseController
      *         )
      *     ),
      *     @OA\Response(response=200,description="User object"),
-     *     @OA\Response(response=403,description="Users cannot view users from another customer")
+     *     @OA\Response(response=403,description="Current logged user don't have permission to create users, it's not an admin")
      *  )
      */
     public function actionCreate() {}
 
+    /**
+     *  @OA\Patch(
+     *     path="/users/{user_id}",
+     *     summary="Updates a user",
+     *     tags={"users"},
+     *     @OA\Parameter(name="user_id",
+     *          description="ID of the user",
+     *          in="path",
+     *          required=true,
+     *          @OA\Schema(type="integer")
+     *     ),
+     *     @OA\RequestBody(
+     *         description="Request body",
+     *         @OA\MediaType(
+     *             mediaType="application/x-www-form-urlencoded",
+     *             @OA\Schema(
+     *                 type="object",
+     *                 required={"customer_id", "name", "phone", "email", "password"},
+     *                 @OA\Property(
+     *                     property="name",
+     *                     description="User's name",
+     *                     type="string",
+     *                 ),
+     *                 @OA\Property(
+     *                     property="phone",
+     *                     description="User's phone",
+     *                     type="integer",
+     *                 ),
+     *                 @OA\Property(
+     *                     property="email",
+     *                     description="User's email",
+     *                     type="string",
+     *                 ),
+     *                 @OA\Property(
+     *                     property="password",
+     *                     description="User's password",
+     *                     type="string",
+     *                 ),
+     *                 @OA\Property(
+     *                     property="is_admin",
+     *                     description="Whether user is an admin",
+     *                     type="boolean",
+     *                 ),
+     *                 @OA\Property(
+     *                     property="can_order_document",
+     *                     description="Whether user can order documents/searchs",
+     *                     type="boolean"
+     *                 ),
+     *                 @OA\Property(
+     *                     property="can_insert_credits",
+     *                     description="Whether user can insert credits",
+     *                     type="boolean"
+     *                 ),
+     *                 @OA\Property(
+     *                     property="can_see_reports",
+     *                     description="Whether user can see reports",
+     *                     type="boolean"
+     *                 ),
+     *                 @OA\Property(
+     *                     property="can_see_invoices",
+     *                     description="Whether user can see invoices",
+     *                     type="boolean"
+     *                 )
+     *             )
+     *         )
+     *     ),
+     *     @OA\Response(response=200,description="User object"),
+     *     @OA\Response(response=403,description="Users cannot update users from another customer"),
+     *     @OA\Response(response=418,description="Current logged user don't have permission to update another user but himself, it's not an admin")
+     *  )
+     */
+    public function actionUpdate() {}
+
+    /**
+     *  @OA\Delete(
+     *     path="/users/{user_id}",
+     *     summary="Deletes user",
+     *     tags={"users"},
+     *     @OA\Parameter(name="user_id",
+     *          description="ID of the user",
+     *          in="path",
+     *          required=true,
+     *          @OA\Schema(type="integer")
+     *     ),
+     *     @OA\Response(response=204,description="User deleted"),
+     *     @OA\Response(response=403,description="Cannot delete users from another customer"),
+     *     @OA\Response(response=418,description="Current logged user don't have permission to delete users, it's not an admin")
+     *  )
+     */
+    public function actionDelete() {}
 }

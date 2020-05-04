@@ -14,6 +14,9 @@ paths:
         content:
           application/x-www-form-urlencoded:
             schema:
+              required:
+                - email
+                - password
               properties:
                 email:
                   description: 'User''s email'
@@ -39,7 +42,15 @@ paths:
         -
           name: user_id
           in: path
+          description: 'ID of the user'
           required: true
+          schema:
+            type: integer
+        -
+          name: expand
+          in: query
+          description: 'Relations to expand (Customer)'
+          required: false
           schema:
             type: string
       responses:
@@ -47,6 +58,86 @@ paths:
           description: 'User object'
         '403':
           description: 'Users cannot view users from another customer \n ahsduhasd'
+    delete:
+      tags:
+        - users
+      summary: 'Deletes user'
+      operationId: 'api\controllers\UserController::actionDelete'
+      parameters:
+        -
+          name: user_id
+          in: path
+          description: 'ID of the user'
+          required: true
+          schema:
+            type: integer
+      responses:
+        '204':
+          description: 'User deleted'
+        '403':
+          description: 'Cannot delete users from another customer'
+        '418':
+          description: 'Current logged user don''t have permission to delete users, it''s not an admin'
+    patch:
+      tags:
+        - users
+      summary: 'Updates a user'
+      operationId: 'api\controllers\UserController::actionUpdate'
+      parameters:
+        -
+          name: user_id
+          in: path
+          description: 'ID of the user'
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        description: 'Request body'
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              required:
+                - customer_id
+                - name
+                - phone
+                - email
+                - password
+              properties:
+                name:
+                  description: 'User''s name'
+                  type: string
+                phone:
+                  description: 'User''s phone'
+                  type: integer
+                email:
+                  description: 'User''s email'
+                  type: string
+                password:
+                  description: 'User''s password'
+                  type: string
+                is_admin:
+                  description: 'Whether user is an admin'
+                  type: boolean
+                can_order_document:
+                  description: 'Whether user can order documents/searchs'
+                  type: boolean
+                can_insert_credits:
+                  description: 'Whether user can insert credits'
+                  type: boolean
+                can_see_reports:
+                  description: 'Whether user can see reports'
+                  type: boolean
+                can_see_invoices:
+                  description: 'Whether user can see invoices'
+                  type: boolean
+              type: object
+      responses:
+        '200':
+          description: 'User object'
+        '403':
+          description: 'Users cannot update users from another customer'
+        '418':
+          description: 'Current logged user don''t have permission to update another user but himself, it''s not an admin'
   /users:
     post:
       tags:
@@ -58,6 +149,12 @@ paths:
         content:
           application/x-www-form-urlencoded:
             schema:
+              required:
+                - customer_id
+                - name
+                - phone
+                - email
+                - password
               properties:
                 customer_id:
                   description: 'ID of the customer whom the user will belong'
@@ -94,4 +191,4 @@ paths:
         '200':
           description: 'User object'
         '403':
-          description: 'Users cannot view users from another customer'
+          description: 'Current logged user don''t have permission to create users, it''s not an admin'
