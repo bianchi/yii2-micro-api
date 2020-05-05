@@ -49,7 +49,7 @@ paths:
         -
           name: expand
           in: query
-          description: 'Relations to expand (Customer)'
+          description: 'Relations to expand separeted by comma (Customer)'
           required: false
           schema:
             type: string
@@ -57,7 +57,9 @@ paths:
         '200':
           description: 'User object'
         '403':
-          description: 'Users cannot view users from another customer \n ahsduhasd'
+          description: 'Users cannot view users from another customer'
+        '404':
+          description: 'User not found'
     delete:
       tags:
         - users
@@ -76,8 +78,12 @@ paths:
           description: 'User deleted'
         '403':
           description: 'Cannot delete users from another customer'
+        '404':
+          description: 'User not found'
         '418':
           description: 'Current logged user don''t have permission to delete users, it''s not an admin'
+        '419':
+          description: 'You cannot delete yourself'
     patch:
       tags:
         - users
@@ -112,9 +118,6 @@ paths:
                 email:
                   description: 'User''s email'
                   type: string
-                password:
-                  description: 'User''s password'
-                  type: string
                 is_admin:
                   description: 'Whether user is an admin'
                   type: boolean
@@ -136,7 +139,11 @@ paths:
           description: 'User object'
         '403':
           description: 'Users cannot update users from another customer'
+        '404':
+          description: 'User not found'
         '418':
+          description: Cannot
+        '419':
           description: 'Current logged user don''t have permission to update another user but himself, it''s not an admin'
   /users:
     post:

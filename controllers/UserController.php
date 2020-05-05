@@ -7,6 +7,9 @@ use api\models\search\OrderSearch;
 use api\models\User;
 use yii\web\ForbiddenHttpException;
 use yii\web\BadRequestHttpException;
+use yii\web\ServerErrorHttpException;
+use yii\web\NotFoundHttpException;
+use yii\helpers\Url;
 
 class UserController extends BaseController
 {
@@ -21,7 +24,8 @@ class UserController extends BaseController
         $actions = parent::actions();
 
         // disable the "index" action in this endpoint
-        unset($actions['index']);
+        // delete, update and view are overwrited
+        unset($actions['index'], $actions['delete'], $actions['update'], $actions['view']);
 
         return $actions;
     }
@@ -42,21 +46,31 @@ class UserController extends BaseController
             throw new ForbiddenHttpException('Current logged user don\'t have permission to create users, it\'s not an admin');
         }
 
-        if ($action === 'delete' && !$user->is_admin) {
-            if ($model->id != $user->customer_id) {
+        if ($action === 'delete') {
+            if ($model->id == $user->id) {
+                throw new ForbiddenHttpException('You cannot delete yourself');
+            }
+
+            if ($model->customer_id != $user->customer_id) {
                 throw new ForbiddenHttpException('Cannot delete users from another customer');
             }
 
-            throw new ForbiddenHttpException('Current logged user don\'t have permission to delete users, it\'s not an admin');
+            if (!$user->is_admin) {
+                throw new ForbiddenHttpException('Current logged user don\'t have permission to delete users, it\'s not an admin');
+            }
         }
 
         if ($action == 'view') {
-            if ($model->id != $user->customer_id) {
-                throw new ForbiddenHttpException('Users cannot view users from another customer');
+            if ($model->customer_id != $user->customer_id) {
+                throw new ForbiddenHttpException('Cannot view users from another customer');
             }
         }
 
         if ($action == 'update') {
+            if ($model->deleted) {
+                throw new ForbiddenHttpException('Cannot update a deleted user');
+            }
+
             if ($model->id != $user->customer_id) {
                 throw new ForbiddenHttpException('Users cannot update users from another customer');
             }
@@ -167,10 +181,21 @@ class UserController extends BaseController
      *          @OA\Schema(type="string")
      *     ),
      *     @OA\Response(response=200,description="User object"),
-     *     @OA\Response(response=403,description="Users cannot view users from another customer \n ahsduhasd")
+     *     @OA\Response(response=403,description="Users cannot view users from another customer"),
+     *     @OA\Response(response=404,description="User not found"),
      *  )
      */
-    public function actionView() {}
+    public function actionView($id) 
+    {
+        $model = User::findOne(['id' => $id, 'deleted' => false]);
+        if ($model == null) {
+            throw new NotFoundHttpException("User not found");
+        }
+        
+        $this->checkAccess($this->action->id, $model);
+
+        return $model;
+    }
 
     /**
      *  @OA\Post(
@@ -241,7 +266,29 @@ class UserController extends BaseController
      *     @OA\Response(response=403,description="Current logged user don't have permission to create users, it's not an admin")
      *  )
      */
-    public function actionCreate() {}
+    public function actionCreate() 
+    {
+        $this->checkAccess($this->action->id);
+
+        $model = new User();
+        $model->load(\Yii::$app->getRequest()->getBodyParams(), '');
+
+        $deletedUser = User::findOne(['email' => $model->email, 'deleted' => true]);
+        if ($deletedUser != null) {
+            $deletedUser->setAttributes($model->attributes());
+            $model = $deletedUser;
+        }
+
+        if ($model->save()) {
+            $response = \Yii::$app->getResponse()->setStatusCode(201);
+            $id = implode(',', array_values($model->getPrimaryKey(true)));
+            $response->getHeaders()->set('Location', Url::toRoute([$this->viewAction, 'id' => $id], true));
+        } elseif (!$model->hasErrors()) {
+            throw new ServerErrorHttpException('Failed to create the object for unknown reason.');
+        }
+
+        return $model;
+    }
 
     /**
      *  @OA\Patch(
@@ -277,11 +324,6 @@ class UserController extends BaseController
      *                     type="string",
      *                 ),
      *                 @OA\Property(
-     *                     property="password",
-     *                     description="User's password",
-     *                     type="string",
-     *                 ),
-     *                 @OA\Property(
      *                     property="is_admin",
      *                     description="Whether user is an admin",
      *                     type="boolean",
@@ -311,10 +353,28 @@ class UserController extends BaseController
      *     ),
      *     @OA\Response(response=200,description="User object"),
      *     @OA\Response(response=403,description="Users cannot update users from another customer"),
-     *     @OA\Response(response=418,description="Current logged user don't have permission to update another user but himself, it's not an admin")
+     *     @OA\Response(response=404,description="User not found"),
+     *     @OA\Response(response=418,description="Cannot"),
+     *     @OA\Response(response=419,description="Current logged user don't have permission to update another user but himself, it's not an admin")
      *  )
      */
-    public function actionUpdate() {}
+    public function actionUpdate($id) 
+    {
+        $model = User::findOne(['id' => $id, 'deleted' => false]);
+        if ($model == null) {
+            throw new NotFoundHttpException("User not found");
+        }
+        
+        $this->checkAccess($this->action->id, $model);
+
+        $model->load(\Yii::$app->getRequest()->getBodyParams(), '');
+        $model->password = $model->oldAttributes['password'];
+        if ($model->save() === false && !$model->hasErrors()) {
+            throw new ServerErrorHttpException('Failed to update the object for unknown reason.');
+        }
+
+        return $model;
+    }
 
     /**
      *  @OA\Delete(
@@ -329,8 +389,25 @@ class UserController extends BaseController
      *     ),
      *     @OA\Response(response=204,description="User deleted"),
      *     @OA\Response(response=403,description="Cannot delete users from another customer"),
-     *     @OA\Response(response=418,description="Current logged user don't have permission to delete users, it's not an admin")
+     *     @OA\Response(response=404,description="User not found"),
+     *     @OA\Response(response=418,description="Current logged user don't have permission to delete users, it's not an admin"),
+     *     @OA\Response(response=419,description="You cannot delete yourself")
      *  )
      */
-    public function actionDelete() {}
+    public function actionDelete($id) 
+    {
+        $model = User::findOne(['id' => $id, 'deleted' => false]);
+        if ($model == null) {
+            throw new NotFoundHttpException("User not found");
+        }
+
+        $this->checkAccess($this->action->id, $model);
+
+        $model->deleted = true;
+        if (!$model->save()) {
+            throw new ServerErrorHttpException('Failed to delete the object for unknown reason.');
+        }
+
+        \Yii::$app->getResponse()->setStatusCode(204);
+    }
 }

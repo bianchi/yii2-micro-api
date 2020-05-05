@@ -160,6 +160,7 @@ class User extends \yii\db\ActiveRecord implements \yii\web\IdentityInterface
                 $this->password = password_hash($this->password, PASSWORD_BCRYPT);
                 $this->access_token = Yii::$app->getSecurity()->generateRandomString();
             }
+
             return true;
         }
         return false;
@@ -179,6 +180,7 @@ class User extends \yii\db\ActiveRecord implements \yii\web\IdentityInterface
         $this->can_order_document = boolval($this->can_order_document);
         $this->can_see_invoices = boolval($this->can_see_invoices);
         $this->can_see_reports = boolval($this->can_see_reports);
+        $this->deleted = boolval($this->deleted);
 
         return parent::afterFind();
     }

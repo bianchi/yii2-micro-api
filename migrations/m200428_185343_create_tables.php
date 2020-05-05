@@ -34,7 +34,8 @@ class m200428_185343_create_tables extends Migration
             'can_insert_credits' => $this->boolean()->notNull()->defaultValue(false),
             'can_see_reports' => $this->boolean()->notNull()->defaultValue(false),
             'can_see_invoices' => $this->boolean()->notNull()->defaultValue(false),
-            'customer_id' => $this->integer()->notNull()
+            'customer_id' => $this->integer()->notNull(),
+            'deleted' => $this->boolean()->notNull()->defaultValue(false),
         ]);
 
         $this->createIndex(
@@ -476,7 +477,7 @@ class m200428_185343_create_tables extends Migration
         }
 
 
-        $tables = ['invoices', 'order_history', 'orders', 'order_statuses', 'document_types', 'users', 'customers'];
+        $tables = ['invoices', 'order_history', 'orders', 'order_statuses', 'document_types', 'users', 'customers', 'password_reset'];
 
         foreach ($tables as $table) {
             $this->dropTable($table);
