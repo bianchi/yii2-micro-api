@@ -17,7 +17,8 @@ use api\models\User;
  * @property OrderHistory[] $orderHistories
  * @property OrderStatuses $currentStatus
  * @property DocumentTypes $documentType
- * @property Users $user
+ * @property User $user
+ * @property Customer $customer
  */
 class Order extends \yii\db\ActiveRecord
 {
@@ -66,13 +67,13 @@ class Order extends \yii\db\ActiveRecord
      */
     public function extraFields()
     {
-        return ['orderHistories', 'currentStatus', 'documentType', 'user'];
+        return ['histories', 'currentStatus', 'documentType', 'user', 'customer'];
     }
 
     /**
      * @return \yii\db\ActiveQuery
      */
-    public function getOrderHistories()
+    public function getHistories()
     {
         return $this->hasMany(OrderHistory::className(), ['order_id' => 'id']);
     }
@@ -99,5 +100,13 @@ class Order extends \yii\db\ActiveRecord
     public function getUser()
     {
         return $this->hasOne(User::className(), ['id' => 'user_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getCustomer()
+    {
+        return $this->hasOne(Customer::className(), ['id' => 'customer_id']);
     }
 }

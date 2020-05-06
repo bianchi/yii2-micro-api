@@ -25,23 +25,6 @@ class PasswordResetController extends BaseController
     }
 
     /**
-     * Disable password-reset/index, password-reset/delete, password-reset/update
-     * @return array $actions
-     */
-    public function actions()
-    {
-        $actions = parent::actions();
-
-        /**
-         * disable default "index", "delete" and "update" actions in this endpoint
-         * "create" and "view are unseted because we will use the custom ones in this controller
-         */
-        unset($actions['index'], $actions['delete'], $actions['update'], $actions['create'], $actions['view']);
-
-        return $actions;
-    }
-
-    /**
      * Generates a password_reset entry with a token and send an email to the user
      * with the link to reset its password
      *

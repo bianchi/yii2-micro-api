@@ -70,6 +70,7 @@ class m200428_185343_create_tables extends Migration
 
         $this->createTable('orders', [
             'id' => $this->bigPrimaryKey()->notNull(),
+            'customer_id' => $this->integer()->notNull(),
             'user_id' => $this->integer()->notNull(),
             'document_type_id' => $this->integer()->notNull(),
             'current_status_id' => $this->integer()->notNull(),
@@ -78,6 +79,20 @@ class m200428_185343_create_tables extends Migration
             'estimated_time' => $this->dateTime()->notNull(),
             'delivered_time' => $this->dateTime()
         ]);
+
+        $this->createIndex(
+            'idx-orders-customer_id',
+            'orders',
+            'customer_id'
+        );
+
+        $this->addForeignKey(
+            'fk-orders-customer_id',
+            'orders',
+            'customer_id',
+            'customers',
+            'id'
+        );
 
         $this->createIndex(
             'idx-orders-user_id',
@@ -314,6 +329,7 @@ class m200428_185343_create_tables extends Migration
 
         $this->insert('orders', [
             'user_id' => 1,
+            'customer_id' => 1,
             'document_type_id' => 1,
             'current_status_id' => 4,
             'estimated_time' => $estimatedTime->format('Y-m-d H:i:s')
@@ -341,6 +357,7 @@ class m200428_185343_create_tables extends Migration
 
         $this->insert('orders', [
             'user_id' => 1,
+            'customer_id' => 1,
             'document_type_id' => 2,
             'current_status_id' => 2,
             'estimated_time' => $estimatedTime->format('Y-m-d H:i:s')
@@ -358,6 +375,7 @@ class m200428_185343_create_tables extends Migration
 
         $this->insert('orders', [
             'user_id' => 2,
+            'customer_id' => 1,
             'document_type_id' => 3,
             'current_status_id' => 1,
             'estimated_time' => $estimatedTime->format('Y-m-d H:i:s')
@@ -370,6 +388,7 @@ class m200428_185343_create_tables extends Migration
 
         $this->insert('orders', [
             'user_id' => 3,
+            'customer_id' => 2,
             'document_type_id' => 7,
             'current_status_id' => 1,
             'estimated_time' => $estimatedTime->format('Y-m-d H:i:s')
@@ -444,6 +463,7 @@ class m200428_185343_create_tables extends Migration
         $foreignKeys = [
             'users' => 'fk-users-customer_id',
             'orders' =>'fk-orders-user_id',
+            'orders' =>'fk-orders-customer_id',
             'orders' => 'fk-orders-document_type_id',
             'orders' => 'fk-orders-current_status_id',
             'order_history' => 'fk-order_history-order_id',
@@ -462,6 +482,7 @@ class m200428_185343_create_tables extends Migration
             'users' => 'idx-users-email',
             'users' => 'idx-users-password',
             'orders' =>'idx-orders-user_id',
+            'orders' =>'idx-orders-customer_id',
             'orders' => 'idx-orders-document_type_id',
             'orders' => 'idx-orders-current_status_id',
             'order_history' => 'idx-order_history-order_id',

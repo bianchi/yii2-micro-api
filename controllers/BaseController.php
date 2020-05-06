@@ -18,6 +18,7 @@ class BaseController extends ActiveController
     {
         $noAuthenticationRoutes = [
             'user/login',
+            'customer/create',
             'password-reset/create',
             'password-reset/view'
         ];
@@ -37,11 +38,16 @@ class BaseController extends ActiveController
             }
 
             $currentDate = new \Datetime;
-            $tokenExpirationDate = new \Datetime($user->last_api_request);
-            $tokenExpirationDate->modify('+' . User::LOGIN_TOKEN_DURATION_MINUTES . ' minutes');
+            $tokenTimeoutDate =  new \Datetime($user->last_api_request);
+            $tokenTimeoutDate->modify('+' . User::LOGIN_TOKEN_TIMEOUT_MINUTES . ' minutes');
 
-            if ($currentDate > $tokenExpirationDate) {
-                throw new UnauthorizedHttpException("Token has expired, please login again.");
+            $tokenExpirationDate =new \Datetime($user->last_login);
+            $tokenExpirationDate->modify('+' . User::LOGIN_TOKEN_MAX_DURATION_MINUTES . ' minutes');
+
+            if ($currentDate > $tokenTimeoutDate) {
+                throw new UnauthorizedHttpException("Token has expired by inactivity, please login again.");
+            } elseif ($currentDate > $tokenExpirationDate) {
+                throw new UnauthorizedHttpException("Token has expired by max duration, please login again.");
             } else {
                 $user->updateAttributes([
                     'last_api_request' => $currentDate->format('Y-m-d H:i:s'),
@@ -75,5 +81,14 @@ class BaseController extends ActiveController
         ];
 
         return $behaviors;
+    }
+
+    public function actions()
+    {
+        $actions = parent::actions();
+
+        unset($actions['index'], $actions['delete'], $actions['update'], $actions['view'], $actions['create']);
+
+        return $actions;
     }
 }

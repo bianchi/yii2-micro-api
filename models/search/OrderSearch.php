@@ -3,6 +3,7 @@
 namespace api\models\search;
 
 use api\models\Order;
+use api\models\User;
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
 
@@ -11,31 +12,35 @@ class OrderSearch extends Model
     public $id;
     public $document_type_id;
     public $current_status_id;
-    public $customer_id;
-    public $user_id;
     
     public function rules()
     {
         return [
-            [['id', 'customer_id', 'user_id', 'document_type_id', 'current_status_id'], 'integer'],
+            [['id', 'document_type_id', 'current_status_id'], 'integer'],
         ];
     }
 
     public function search($params)
     {
-        $query = Order::find()->alias('o')->joinWith('user u');
+        $query = Order::find();
 
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
         ]);
 
-        if (!($this->load($params, '') && $this->validate())) {
+        $loggedUser = User::findOne(\Yii::$app->user->id);
+        if ($loggedUser->is_admin) {
+            $query->andWhere(['customer_id' => $loggedUser->customer_id]);
+        } else {
+            $query->andWhere(['user_id' => $loggedUser->id]);
+        }
+
+        // if an invalid parameter is send, return without using any parameters
+        if (!empty($params) && !($this->load($params, '') && $this->validate())) {
             return $dataProvider;
         }
 
         $query->andFilterWhere(['o.id' => $this->id]);
-        $query->andFilterWhere(['user_id' => $this->user_id]);
-        $query->andFilterWhere(['u.customer_id' => $this->customer_id]);
         $query->andFilterWhere(['current_status_id' => $this->current_status_id]);
 
         return $dataProvider;

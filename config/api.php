@@ -20,37 +20,36 @@ $config = [
                     'controller' => 'user', 
                     'extraPatterns' => [
                         'POST login' => 'login',
-                        'GET,OPTIONS {user_id}/orders' => 'orders',
                     ],
-                    'tokens' => [
-                        '{id}' => '<id:\\w+>',
-                        '{user_id}' => '<user_id:\\w+>'
-                    ]
                 ],
                 [
                     'class' => 'yii\rest\UrlRule', 
                     'controller' => 'customer',
+                ],
+                [
+                    'class' => 'yii\rest\UrlRule', 
+                    'controller' => 'order', 
                     'extraPatterns' => [
-                        'GET,OPTIONS {customer_id}/orders' => 'orders',
-                        'GET,OPTIONS {customer_id}/orders/stats' => 'orders-stats',
-                        'GET,OPTIONS {customer_id}/invoices' => 'invoices',
-                        'GET,OPTIONS {customer_id}/invoices/stats' => 'invoices-stats'
+                        'GET,OPTIONS /stats' => 'stats',
                     ],
-                    'tokens' => [
-                        // '{id}' => '<id/:\\w+>', // acho que não precisa disso
-                        '{customer_id}' => '<customer_id:\\w+>'
-                    ]
+                ],
+                [
+                    'class' => 'yii\rest\UrlRule', 
+                    'controller' => 'invoice', 
+                    'extraPatterns' => [
+                        'GET,OPTIONS /stats' => 'stats',
+                    ],
                 ],
                 [
                     'class' => 'yii\rest\UrlRule', 
                     'controller' => 'password-reset',
                     'pluralize' => false,
                     'extraPatterns' => [
-                        'GET {id}' => 'view',
-                        'PATCH {id}/change-password' => 'change-password'
+                        'GET {token}' => 'view',
+                        'PATCH {token}/change-password' => 'change-password'
                     ],
                     'tokens' => [
-                        '{id}' => '<id:\\w+>',
+                        '{token}' => '<token:\\w+>',
                     ]
                 ],
             ],

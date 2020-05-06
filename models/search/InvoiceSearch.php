@@ -4,6 +4,7 @@ namespace api\models\search;
 
 use app\models\Invoice;
 use yii\base\Model;
+use api\models\User;
 use yii\data\ActiveDataProvider;
 
 class InvoiceSearch extends Model 
@@ -12,16 +13,15 @@ class InvoiceSearch extends Model
     public $operation;
     public $customer_name;
     public $approved_only;
-    public $month;
-    public $year;
     public $begin_date;
     public $end_date;
     
     public function rules()
     {
         return [
-            [['order_id', 'month', 'year'], 'integer'],
+            [['order_id'], 'integer'],
             [['operation'], 'string'],
+            [['begin_date', 'end_date'], 'date', 'format' => 'Y-m-d'],
             [['approved_only'], 'boolean', 'trueValue' => true, 'falseValue' => false, 'strict' => true]
         ];
     }
@@ -37,14 +37,20 @@ class InvoiceSearch extends Model
     {
         $query = Invoice::find()->alias('ft')
             ->joinWith(['customer c'])
-            ->joinWith(['user u'])
             ->joinWith(['order o']);
 
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
         ]);
 
-        if (!($this->load($params, '') && $this->validate())) {
+        $loggedUser = User::findOne(\Yii::$app->user->id);
+        if ($loggedUser->is_admin) {
+            $query->andWhere(['ft.customer_id' => $loggedUser->customer_id]);
+        } else {
+            $query->andWhere(['user_id' => $loggedUser->id]);
+        }
+
+        if (!empty($params) && !($this->load($params, '') && $this->validate())) {
             return $dataProvider;
         }
 
@@ -54,14 +60,6 @@ class InvoiceSearch extends Model
 
         if ($this->approved_only) {
             $query->andWhere(['IS NOT', 'approved_time', null]);
-        }
-
-        if (!empty($this->month) && !empty($this->year)) {
-            $this->begin_date = (new \Datetime($this->year . '-' . $this->month . '-01'))->setTime(0, 0, 0);
-            $this->end_date = (clone $this->begin_date)->modify('last day of this month')->setTime(23, 59, 59);
-
-            $this->begin_date = $this->begin_date->format('Y-m-d H:i:s');
-            $this->end_date = $this->end_date->format('Y-m-d H:i:s');
         }
 
         if (!empty($this->begin_date) && !empty($this->end_date)) {
