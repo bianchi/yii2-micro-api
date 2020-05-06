@@ -226,6 +226,7 @@ class m200428_185343_create_tables extends Migration
         $this->createTable('password_reset', [
             'token' => "varchar(255) primary key not null",
             'user_id' => $this->integer()->notNull(),
+            'requested_time' => $this->datetime()->notNull(),
             'expiration_time' => $this->datetime()->notNull(),
             'already_used' => $this->boolean()->notNull()->defaultValue(false)
         ]);

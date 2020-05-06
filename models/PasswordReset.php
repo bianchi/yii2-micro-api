@@ -46,6 +46,14 @@ class PasswordReset extends \yii\db\ActiveRecord
         ];
     }
 
+    public function fields()
+    {
+        $fields = parent::fields();
+        $fields['valid'] = 'isValid';
+
+        return $fields;
+    }
+
     /**
      * @return \yii\db\ActiveQuery
      */
@@ -61,6 +69,17 @@ class PasswordReset extends \yii\db\ActiveRecord
         return parent::afterFind();
     }
 
+    public function getIsValid()
+    {
+        try {
+            $this->checkValid();
+
+            return true;
+        } catch (\Exception $e) {
+            return false;
+        }
+    }
+
     public function checkValid()
     {
         $currentTime = new \Datetime;
@@ -72,5 +91,7 @@ class PasswordReset extends \yii\db\ActiveRecord
         if ($this->already_used) {
             throw new NotAcceptableHttpException("Token already used");
         }
+
+        return true;
     }
 }

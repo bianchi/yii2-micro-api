@@ -2,8 +2,6 @@
 
 namespace api\controllers;
 
-use api\models\Order;
-use api\models\search\OrderSearch;
 use api\models\search\UserSearch;
 use api\models\User;
 use yii\web\ForbiddenHttpException;
@@ -44,6 +42,12 @@ class UserController extends BaseController
         if ($action == 'update') {
             if (!$user->is_admin && $model != null && $model->id != \Yii::$app->user->id) {
                 throw new ForbiddenHttpException('Current logged user don\'t have permission to update another user but himself, it\'s not an admin');
+            }
+        }
+
+        if ($action == 'change-password') {
+            if ($model != null && $model->id != \Yii::$app->user->id) {
+                throw new ForbiddenHttpException('You can\'t change another\'s user password');
             }
         }
     }
@@ -142,7 +146,9 @@ class UserController extends BaseController
         $this->checkAccess($this->action->id, $model);
 
         $model->load(\Yii::$app->getRequest()->getBodyParams(), '');
-        $model->password = $model->oldAttributes['password'];
+
+        // keeps the old password even if a password parameter is present in the body
+        $model->password = $model->oldAttributes['password']; 
         if ($model->save() === false && !$model->hasErrors()) {
             throw new ServerErrorHttpException('Failed to update the object for unknown reason.');
         }
@@ -171,5 +177,33 @@ class UserController extends BaseController
         }
 
         \Yii::$app->getResponse()->setStatusCode(204);
+    }
+
+    public function actionChangePassword($id)
+    {
+        $model = User::findOne(['id' => $id, 'deleted' => false]);
+        if ($model == null) {
+            throw new NotFoundHttpException("User not found");
+        }
+
+        $this->checkAccess($this->action->id, $model);
+
+        $body = \Yii::$app->getRequest()->getBodyParams();
+        if (empty($body['current_password'])) {
+            throw new BadRequestHttpException("Missing body parameter 'current_password'");
+        }
+
+        if (empty($body['new_password'])) {
+            throw new BadRequestHttpException("Missing body parameter 'new_password'");
+        }
+
+        if (password_verify($body['current_password'], $model->password)) {
+            $model->password = password_hash($body['new_password'], PASSWORD_BCRYPT);
+            $model->updateAttributes(['password']);
+
+            \Yii::$app->getResponse()->setStatusCode(204);
+        } else {
+            throw new ForbiddenHttpException("Wrong current password");
+        }
     }
 }

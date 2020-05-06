@@ -20,7 +20,8 @@ class BaseController extends ActiveController
             'user/login',
             'customer/create',
             'password-reset/create',
-            'password-reset/view'
+            'password-reset/view',
+            'password-reset/change-password',
         ];
 
         if (!parent::beforeAction($action)) {

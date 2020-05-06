@@ -20,6 +20,7 @@ $config = [
                     'controller' => 'user', 
                     'extraPatterns' => [
                         'POST login' => 'login',
+                        'PATCH,OPTIONS {id}/password' => 'change-password'
                     ],
                 ],
                 [
@@ -30,14 +31,14 @@ $config = [
                     'class' => 'yii\rest\UrlRule', 
                     'controller' => 'order', 
                     'extraPatterns' => [
-                        'GET,OPTIONS /stats' => 'stats',
+                        'GET,OPTIONS stats' => 'stats',
                     ],
                 ],
                 [
                     'class' => 'yii\rest\UrlRule', 
                     'controller' => 'invoice', 
                     'extraPatterns' => [
-                        'GET,OPTIONS /stats' => 'stats',
+                        'GET,OPTIONS stats' => 'stats',
                     ],
                 ],
                 [
@@ -46,7 +47,7 @@ $config = [
                     'pluralize' => false,
                     'extraPatterns' => [
                         'GET {token}' => 'view',
-                        'PATCH {token}/change-password' => 'change-password'
+                        'PATCH {token}' => 'change-password'
                     ],
                     'tokens' => [
                         '{token}' => '<token:\\w+>',

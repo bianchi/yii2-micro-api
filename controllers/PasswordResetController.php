@@ -20,6 +20,7 @@ class PasswordResetController extends BaseController
 
         $behaviors['authenticator']['except'][] = 'create';
         $behaviors['authenticator']['except'][] = 'view';
+        $behaviors['authenticator']['except'][] = 'change-password';
 
         return $behaviors;
     }
@@ -44,6 +45,7 @@ class PasswordResetController extends BaseController
 
         $passwordReset = new PasswordReset;
         $passwordReset->user_id = $user->id;
+        $passwordReset->requested_time = date('Y-m-d H:i:s');
 
         // remove any non alphanumeric characters
         $token = preg_replace("/[^a-zA-Z0-9]/", "", \Yii::$app->security->generateRandomString());
@@ -58,24 +60,29 @@ class PasswordResetController extends BaseController
             throw new ServerErrorHttpException('Failed for unknown reason.', 0);
         }
 
-        \Yii::$app->response->statusCode = 204;
+        // delete all non used password reset requested by this user
+        PasswordReset::deleteAll(['AND',
+            ['!=', 'token', $passwordReset->token],
+            ['user_id' => $passwordReset->user_id],
+            ['already_used' => false],
+        ]);
+
+        return $passwordReset;
     }
 
-    public function actionView($id) 
+    public function actionView($token) 
     {
-        $model = PasswordReset::findOne($id);
+        $model = PasswordReset::findOne($token);
         if ($model == null) {
             throw new NotFoundHttpException("Token not found");
         }
 
-        $model->checkValid();
-
         return $model;
     }
 
-    public function actionChangePassword($id)
+    public function actionChangePassword($token)
     {
-        $passwordReset = PasswordReset::findOne($id);
+        $passwordReset = PasswordReset::findOne($token);
         $passwordReset->checkValid();
 
         $body = \Yii::$app->getRequest()->getBodyParams();
