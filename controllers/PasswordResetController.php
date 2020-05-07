@@ -5,10 +5,9 @@ namespace api\controllers;
 use api\models\PasswordReset;
 use api\models\User;
 use yii\web\BadRequestHttpException;
-use yii\web\ForbiddenHttpException;
-use yii\web\NotAcceptableHttpException;
 use yii\web\NotFoundHttpException;
 use yii\web\ServerErrorHttpException;
+use yii\helpers\Url;
 
 class PasswordResetController extends BaseController
 {
@@ -56,8 +55,12 @@ class PasswordResetController extends BaseController
         $passwordReset->token = $token;
         $passwordReset->already_used = false;
 
-        if ($passwordReset->save() === false && !$passwordReset->hasErrors()) {
-            throw new ServerErrorHttpException('Failed for unknown reason.', 0);
+        if ($passwordReset->save()) {
+            $response = \Yii::$app->getResponse()->setStatusCode(201);
+            $id = implode(',', array_values($passwordReset->getPrimaryKey(true)));
+            $response->getHeaders()->set('Location', Url::toRoute(['/password-reset/' . $id], true));
+        } elseif (!$passwordReset->hasErrors()) {
+            throw new ServerErrorHttpException('Failed to create the object for unknown reason.');
         }
 
         // delete all non used password reset requested by this user

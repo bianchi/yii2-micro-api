@@ -17,6 +17,18 @@ $config = [
             'rules' => [
                 [
                     'class' => 'yii\rest\UrlRule', 
+                    'controller' => 'password-reset',
+                    'pluralize' => false,
+                    'extraPatterns' => [
+                        'GET {token}' => 'view',
+                        'PATCH {token}' => 'change-password'
+                    ],
+                    'tokens' => [
+                        '{token}' => '<token:\\w+>',
+                    ]
+                ],
+                [
+                    'class' => 'yii\rest\UrlRule', 
                     'controller' => 'user', 
                     'extraPatterns' => [
                         'POST login' => 'login',
@@ -43,15 +55,7 @@ $config = [
                 ],
                 [
                     'class' => 'yii\rest\UrlRule', 
-                    'controller' => 'password-reset',
-                    'pluralize' => false,
-                    'extraPatterns' => [
-                        'GET {token}' => 'view',
-                        'PATCH {token}' => 'change-password'
-                    ],
-                    'tokens' => [
-                        '{token}' => '<token:\\w+>',
-                    ]
+                    'controller' => 'document-type', 
                 ],
             ],
         ],
