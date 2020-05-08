@@ -17,6 +17,14 @@ $config = [
             'rules' => [
                 [
                     'class' => 'yii\rest\UrlRule', 
+                    'controller' => 'account',
+                    'patterns' => [
+                        'POST' => 'create',
+                        'GET' => 'index',
+                    ],
+                ],
+                [
+                    'class' => 'yii\rest\UrlRule', 
                     'controller' => 'password-reset',
                     'pluralize' => false,
                     'patterns' => [

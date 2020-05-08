@@ -13,6 +13,7 @@ class BaseController extends ActiveController
     public function beforeAction($action)
     {
         $noAuthenticationRoutes = [
+            'account/create',
             'user/login',
             'password-reset/create',
             'password-reset/view',
@@ -49,8 +50,8 @@ class BaseController extends ActiveController
                     'last_api_request' => $currentDate->format('Y-m-d H:i:s'),
                 ]);
             }
-        }    
-
+        }   
+        
         return true;
     }
     

@@ -28,14 +28,14 @@ class Customer extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['name', 'document_number', 'zip_code', 'public_place', 'number', 'entity_type'], 'required'],
+            [['name', 'document_number', 'entity_type'], 'required'],
             [['entity_type'], 'string'],
             [['max_users'], 'integer'],
             [['name'], 'string', 'max' => 100],
             [['document_number'], 'string', 'max' => 14],
-            [['zip_code', 'number'], 'string', 'max' => 8],
-            [['public_place', 'key', 'secret'], 'string', 'max' => 120],
-            [['complement'], 'string', 'max' => 60],
+            [['address_zip_code', 'address_number'], 'string', 'max' => 8],
+            [['address_public_place', 'key', 'secret'], 'string', 'max' => 120],
+            [['address_complement'], 'string', 'max' => 60],
             [['document_number'], CpfValidator::className(), 'when' => function($model) {
                 return $model->entity_type == self::ENTITY_TYPE_PF;
             }],
