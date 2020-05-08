@@ -26,9 +26,9 @@ class User extends \yii\db\ActiveRecord implements \yii\web\IdentityInterface
 {
     const SCENARIO_LOGIN = 'Login';
 
-    const LOGIN_TOKEN_TIMEOUT_MINUTES = 60;
+    const LOGIN_TOKEN_TIMEOUT_MINUTES = 600;
     const LOGIN_TOKEN_MAX_DURATION_MINUTES = 600;
-    const PASSWORD_RESET_TOKEN_DURATION_MINUTES = 60;
+    const PASSWORD_RESET_TOKEN_DURATION_MINUTES = 600;
 
     public static function tableName()
     {
