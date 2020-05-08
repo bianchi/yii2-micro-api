@@ -4,21 +4,16 @@ namespace api\controllers;
 
 use yii\filters\auth\HttpBearerAuth;
 use yii\rest\ActiveController;
-use yii\web\ForbiddenHttpException;
 use api\models\User;
 use yii\filters\Cors;
 use yii\web\UnauthorizedHttpException;
 
-/**
- * @OA\Info(title="CBR Docs", version="0.1")
- */
 class BaseController extends ActiveController
 {
     public function beforeAction($action)
     {
         $noAuthenticationRoutes = [
             'user/login',
-            'customer/create',
             'password-reset/create',
             'password-reset/view',
             'password-reset/change-password',
@@ -88,6 +83,7 @@ class BaseController extends ActiveController
     {
         $actions = parent::actions();
 
+        // remove framework default actions
         unset($actions['index'], $actions['delete'], $actions['update'], $actions['view'], $actions['create']);
 
         return $actions;

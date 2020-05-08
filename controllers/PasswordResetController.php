@@ -1,13 +1,13 @@
-<?php 
+<?php
 
 namespace api\controllers;
 
 use api\models\PasswordReset;
 use api\models\User;
+use yii\helpers\Url;
 use yii\web\BadRequestHttpException;
 use yii\web\NotFoundHttpException;
 use yii\web\ServerErrorHttpException;
-use yii\helpers\Url;
 
 class PasswordResetController extends BaseController
 {
@@ -55,25 +55,44 @@ class PasswordResetController extends BaseController
         $passwordReset->token = $token;
         $passwordReset->already_used = false;
 
+        $transaction = \Yii::$app->db->beginTransaction();
         if ($passwordReset->save()) {
-            $response = \Yii::$app->getResponse()->setStatusCode(201);
-            $id = implode(',', array_values($passwordReset->getPrimaryKey(true)));
-            $response->getHeaders()->set('Location', Url::toRoute(['/password-reset/' . $id], true));
+            // delete all non used password reset requested by this user
+            PasswordReset::deleteAll(['AND',
+                ['!=', 'token', $passwordReset->token],
+                ['user_id' => $passwordReset->user_id],
+                ['already_used' => false],
+            ]);
+
+            $emailSent = \Yii::$app->mailer->compose()
+                ->setFrom(['cbrdoc.test@gmail.com' => 'CBR SMB'])
+                ->setTo($passwordReset->user->email)
+                ->setSubject('Redefinição de senha')
+                ->setTextBody('Pare redefinir sua senha <a href="http://google.com" target="_blank">clique aqui</a>')
+                ->setHtmlBody('Pare redefinir sua senha <a href="http://google.com" target="_blank">clique aqui</a>')
+                ->send();
+
+            if ($emailSent) {
+                $response = \Yii::$app->getResponse()->setStatusCode(201);
+                $id = implode(',', array_values($passwordReset->getPrimaryKey(true)));
+                $response->getHeaders()->set('Location', Url::toRoute(['/password-reset/' . $id], true));
+
+                $transaction->commit();
+
+                return $passwordReset;
+            } else {
+                $transaction->rollBack();
+                \Yii::$app->getResponse()->setStatusCode(502);
+                \Yii::$app->getResponse()->content = '';
+                return;
+            }
         } elseif (!$passwordReset->hasErrors()) {
+            $transaction->rollBack();
             throw new ServerErrorHttpException('Failed to create the object for unknown reason.');
         }
-
-        // delete all non used password reset requested by this user
-        PasswordReset::deleteAll(['AND',
-            ['!=', 'token', $passwordReset->token],
-            ['user_id' => $passwordReset->user_id],
-            ['already_used' => false],
-        ]);
-
-        return $passwordReset;
     }
 
-    public function actionView($token) 
+    public function actionView($token)
     {
         $model = PasswordReset::findOne($token);
         if ($model == null) {

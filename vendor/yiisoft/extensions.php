@@ -3,6 +3,16 @@
 $vendorDir = dirname(__DIR__);
 
 return array (
+  'yiibr/yii2-br-validator' => 
+  array (
+    'name' => 'yiibr/yii2-br-validator',
+    'version' => '1.1.0.0',
+    'alias' => 
+    array (
+      '@yiibr/brvalidator' => $vendorDir . '/yiibr/yii2-br-validator/src',
+      '@yiibr/brvalidator/tests' => $vendorDir . '/yiibr/yii2-br-validator/tests',
+    ),
+  ),
   'yiisoft/yii2-bootstrap' => 
   array (
     'name' => 'yiisoft/yii2-bootstrap',
@@ -21,14 +31,13 @@ return array (
       '@yii/gii' => $vendorDir . '/yiisoft/yii2-gii/src',
     ),
   ),
-  'yiibr/yii2-br-validator' => 
+  'yiisoft/yii2-swiftmailer' => 
   array (
-    'name' => 'yiibr/yii2-br-validator',
-    'version' => '1.1.0.0',
+    'name' => 'yiisoft/yii2-swiftmailer',
+    'version' => '2.1.2.0',
     'alias' => 
     array (
-      '@yiibr/brvalidator' => $vendorDir . '/yiibr/yii2-br-validator/src',
-      '@yiibr/brvalidator/tests' => $vendorDir . '/yiibr/yii2-br-validator/tests',
+      '@yii/swiftmailer' => $vendorDir . '/yiisoft/yii2-swiftmailer/src',
     ),
   ),
 );

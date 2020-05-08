@@ -2,7 +2,7 @@
 
 namespace api\models\search;
 
-use app\models\Invoice;
+use api\models\Invoice;
 use yii\base\Model;
 use api\models\User;
 use yii\data\ActiveDataProvider;

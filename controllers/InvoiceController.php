@@ -4,7 +4,7 @@ namespace api\controllers;
 
 use api\models\search\InvoiceSearch;
 use api\models\User;
-use app\models\Invoice;
+use api\models\Invoice;
 
 class InvoiceController extends BaseController
 {

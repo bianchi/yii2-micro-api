@@ -1,10 +1,10 @@
 {
     "require": {
         "yiisoft/yii2": "~2.0.0",
-        "yiibr/yii2-br-validator": "^1.0"
+        "yiibr/yii2-br-validator": "^1.0",
+        "yiisoft/yii2-swiftmailer": "~2.1.0"
     },
     "require-dev": {
-        "zircote/swagger-php": "*",
         "yiisoft/yii2-gii": "~2.0.0"
     },
     "repositories": [

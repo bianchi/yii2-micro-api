@@ -19,7 +19,8 @@ $config = [
                     'class' => 'yii\rest\UrlRule', 
                     'controller' => 'password-reset',
                     'pluralize' => false,
-                    'extraPatterns' => [
+                    'patterns' => [
+                        'POST' => 'create',
                         'GET {token}' => 'view',
                         'PATCH {token}' => 'change-password'
                     ],
@@ -29,28 +30,48 @@ $config = [
                 ],
                 [
                     'class' => 'yii\rest\UrlRule', 
+                    'controller' => ['login' => 'user'],
+                    'pluralize' => false,
+                    'patterns' => [
+                        'POST' => 'login',
+                    ],
+                ],
+                [
+                    'class' => 'yii\rest\UrlRule', 
                     'controller' => 'user', 
-                    'extraPatterns' => [
-                        'POST login' => 'login',
+                    'patterns' => [
+                        'GET' => 'index',
+                        'POST' => 'create',
+                        'GET {id}' => 'view',
+                        'PATCH {id}' => 'update',
                         'PATCH,OPTIONS {id}/password' => 'change-password'
                     ],
                 ],
                 [
                     'class' => 'yii\rest\UrlRule', 
                     'controller' => 'customer',
+                    'patterns' => [
+                        'POST' => 'create',
+                        'GET {id}' => 'view',
+                        'PATCH {id}' => 'update',
+                    ],
                 ],
                 [
                     'class' => 'yii\rest\UrlRule', 
                     'controller' => 'order', 
-                    'extraPatterns' => [
-                        'GET,OPTIONS stats' => 'stats',
+                    'patterns' => [
+                        'GET' => 'index',
+                        'GET {id}' => 'view',
+                        'GET stats' => 'stats',
                     ],
                 ],
                 [
                     'class' => 'yii\rest\UrlRule', 
                     'controller' => 'invoice', 
-                    'extraPatterns' => [
-                        'GET,OPTIONS stats' => 'stats',
+                    'patterns' => [
+                        'GET' => 'index',
+                        'GET {id}' => 'view',
+                        'GET stats' => 'stats',
                     ],
                 ],
                 [
@@ -83,13 +104,12 @@ $config = [
         ],
         'mailer' => [
             'class' => 'yii\swiftmailer\Mailer',
-            'viewPath' => '@common/templates/email',
-            'useFileTransport' => YII_ENV_DEV,
+            // 'useFileTransport' => YII_ENV_DEV,
             'transport' => [
                 'class' => 'Swift_SmtpTransport',
-                'host' => 'host',
-                'username' => 'username',
-                'password' => 'password',
+                'host' => 'smtp.gmail.com',
+                'username' => 'cbrdoc.test@gmail.com',
+                'password' => 'cbrdoc.test123',
                 'port' => '587',
                 'encryption' => 'tls',
             ],
