@@ -74,7 +74,7 @@ class m200428_185343_create_tables extends Migration
             'user_id' => $this->integer()->notNull(),
             'document_type_id' => $this->integer()->notNull(),
             'current_status_id' => $this->integer()->notNull(),
-            'name' => $this->string(80)->notNull(),
+            // 'name' => $this->string(80)->notNull(),
             'priority' => $this->boolean()->defaultValue(false),
             'placed_time' => $this->dateTime()->notNull()->defaultExpression('CURRENT_TIMESTAMP'),
             'estimated_time' => $this->dateTime()->notNull(),
