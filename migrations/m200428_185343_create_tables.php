@@ -9,12 +9,16 @@ class m200428_185343_create_tables extends Migration
         $this->createTable('customers', [
             'id' => $this->primaryKey()->notNull(),
             'name' => $this->string(100)->notNull(),
+            'corporate_name' => $this->string(100),
             'entity_type' => "ENUM('PF', 'PJ') NOT NULL",
             'document_number' => $this->string(14)->notNull(),
             'address_zip_code' => $this->string(8),
             'address_public_place' => $this->string(120),
             'address_number' => $this->string(8),
             'address_complement' => $this->string(60),
+            'address_neighborhood' => $this->string(80),
+            'address_city' => $this->string(120),
+            'address_uf' => $this->string(2),
             'key' => $this->string(120),
             'secret' => $this->string(120),
             'max_users' => $this->integer()->notNull()->defaultValue(10)
@@ -23,9 +27,9 @@ class m200428_185343_create_tables extends Migration
         $this->createTable('users', [
             'id' => $this->primaryKey()->notNull(),
             'name' => $this->string(60)->notNull(),
-            'phone' => $this->string(15)->notNull(),
             'email' => $this->string(200)->notNull(),
             'password' => $this->string(255)->notNull(),
+            'phone' => $this->string(15),
             'access_token' => $this->string(255),
             'last_login' => $this->dateTime(),
             'last_api_request' => $this->dateTime(),
@@ -278,25 +282,27 @@ class m200428_185343_create_tables extends Migration
     {
         $this->insert('customers', [
             'name' => 'JHOB',
-            'key' => 'key123',
-            'secret' => 'secret123',
+            'entity_type' => 'PJ',
+            'document_number' => '11111111111180',
             'address_zip_code' => '85914153',
             'address_public_place' => 'Rua Maranhão',
             'address_number' => '1170',
-            'entity_type' => 'PJ',
-            'document_number' => '11111111111180',
+            'address_neighborhood' => 'Jd. Pancera',
+            'address_city' => 'Toledo',
+            'address_uf' => 'PR',
         ]);
 
         $this->insert('customers', [
-            'name' => 'Koodari',
-            'key' => 'key456',
-            'secret' => 'secret456',
+            'name' => 'João Pedro da Silva',
+            'entity_type' => 'PF',
+            'document_number' => '11111111111',
             'address_zip_code' => '81010001',
             'address_public_place' => 'Av Presidente Wenceslau Braz',
             'address_number' => '2776',
             'address_complement' => '2º andar',
-            'entity_type' => 'PF',
-            'document_number' => '11111111111',
+            'address_neighborhood' => 'Lindóia',
+            'address_city' => 'Curitiba',
+            'address_uf' => 'PR',
         ]);
 
 
@@ -319,7 +325,7 @@ class m200428_185343_create_tables extends Migration
         ]);
 
         $this->insert('users', [
-            'name' => 'User from Koodari',
+            'name' => 'Admin from Koodari',
             'email' => 'koodari@gmail.com',
             'phone' => '4132770707',
             'password' => password_hash('123', PASSWORD_BCRYPT),

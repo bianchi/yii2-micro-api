@@ -2,7 +2,7 @@
 
 namespace api\models;
 
-use app\models\Invoice;
+use api\models\Invoice;
 use yiibr\brvalidator\CnpjValidator;
 use yiibr\brvalidator\CpfValidator;
 
@@ -34,7 +34,9 @@ class Customer extends \yii\db\ActiveRecord
             [['name'], 'string', 'max' => 100],
             [['document_number'], 'string', 'max' => 14],
             [['address_zip_code', 'address_number'], 'string', 'max' => 8],
-            [['address_public_place', 'key', 'secret'], 'string', 'max' => 120],
+            [['address_neighborhood'], 'string', 'max' => 80],
+            [['address_public_place', 'address_city', 'key', 'secret'], 'string', 'max' => 120],
+            [['address_uf'], 'string', 'max' => 2],
             [['address_complement'], 'string', 'max' => 60],
             [['document_number'], CpfValidator::className(), 'when' => function($model) {
                 return $model->entity_type == self::ENTITY_TYPE_PF;
@@ -49,11 +51,22 @@ class Customer extends \yii\db\ActiveRecord
     {
         return [
             'id' => 'ID',
-            'name' => 'Name',
+            'name' => 'Nome',
+            'corporate_name' => 'Razão social',
+            'entity_type' => 'Entidade fiscal',
+            'document_number' => 'CPF/CNPJ',
+            'address_zip_code' => 'CEP',
+            'address_public_place' => 'Logradouro',
+            'address_number' => 'Número',
+            'address_complement' => 'Complemento',
+            'address_neighborhood' => 'Bairro',
+            'address_city' => 'Cidade',
+            'address_uf' => 'UF',
             'key' => 'Key',
             'secret' => 'Secret',
+            'max_users' => 'Max Users',
         ];
-    }
+    }    
 
     public function getUsers()
     {

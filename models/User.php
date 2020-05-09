@@ -43,9 +43,10 @@ class User extends \yii\db\ActiveRecord implements \yii\web\IdentityInterface
     public function rules()
     {
         return [
-            [['name', 'email', 'password', 'customer_id', 'phone'], 'required'],
+            [['name', 'email', 'password', 'customer_id'], 'required'],
             [['last_login', 'last_api_request'], 'safe'],
-            [['is_admin', 'can_order_document', 'can_insert_credits', 'can_see_reports', 'can_see_invoices'], 'boolean'],
+            [['is_admin', 'can_order_document', 'can_insert_credits', 'can_see_reports', 'can_see_invoices'], 'boolean', 'trueValue' => true, 'falseValue' => false, 'strict' => true],
+            [['is_admin', 'can_order_document', 'can_insert_credits', 'can_see_reports', 'can_see_invoices'], 'default', 'value'=> true],
             [['customer_id'], 'integer'],
             [['name'], 'string', 'max' => 60],
             [['email'], 'email'],
@@ -138,7 +139,7 @@ class User extends \yii\db\ActiveRecord implements \yii\web\IdentityInterface
     {
         $fields = parent::fields();
 
-        // remove fields that contain sensitive information
+        // remove field because contains sensitive information
         unset($fields['password']);
 
         // access_token is only sent in /users/login
@@ -169,12 +170,29 @@ class User extends \yii\db\ActiveRecord implements \yii\web\IdentityInterface
 
     public function afterSave($insert, $changedAttributes)
     {
-        $this->refresh(); // refresh attributes with database values
+        $this->refresh(); // refresh attributes with all database columns
 
         return parent::afterSave($insert, $changedAttributes);
     }
 
+    public function beforeValidate()
+    {
+        $this->booleansToStrictBooleans();
+
+        return parent::beforeValidate();
+    }
+
     public function afterFind()
+    {
+        $this->booleansToStrictBooleans();
+
+        return parent::afterFind();
+    }
+
+    /**
+     * Converts fields to strict booleans. As we always receive strings they are to strict boolean for validation and error message porposes
+     */
+    private function booleansToStrictBooleans()
     {
         $this->is_admin = boolval($this->is_admin);
         $this->can_insert_credits = boolval($this->can_insert_credits);
@@ -182,7 +200,5 @@ class User extends \yii\db\ActiveRecord implements \yii\web\IdentityInterface
         $this->can_see_invoices = boolval($this->can_see_invoices);
         $this->can_see_reports = boolval($this->can_see_reports);
         $this->deleted = boolval($this->deleted);
-
-        return parent::afterFind();
     }
 }
