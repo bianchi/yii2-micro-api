@@ -35,17 +35,6 @@ class Account extends Model
     public $customer;
     public $user;
 
-    public function init()
-    {
-        parent::init();
-
-        $this->user_is_admin = true;
-        $this->user_can_insert_credits = true;
-        $this->user_can_order_document = true;
-        $this->user_can_see_invoices = true;
-        $this->user_can_see_reports = true;
-    }
-
     public function rules()
     {
         return [
@@ -63,7 +52,6 @@ class Account extends Model
             [['customer_document_number'], CnpjValidator::className(), 'when' => function($model) {
                 return $model->customer_entity_type == Customer::ENTITY_TYPE_PJ;
             }],
-            [['user_is_admin', 'user_can_order_document', 'user_can_insert_credits', 'user_can_see_reports', 'user_can_see_invoices'], 'boolean', 'trueValue' => true, 'falseValue' => false, 'strict' => true],
             [['user_name'], 'string', 'max' => 60],
             [['user_email'], 'email'],
             [['user_email'], 'string', 'max' => 200],
@@ -89,17 +77,14 @@ class Account extends Model
             'user_name' => 'Nome do usuário',
             'user_email' => 'Email',
             'user_password' => 'Senha',
-            'user_is_admin' => 'É administrador',
-            'user_can_order_document' => 'Pode requisitar documentos',
-            'user_can_insert_credits' => 'Pode inserir créditos',
-            'user_can_see_reports' => 'Pode visualizar relatórios',
-            'user_can_see_invoices' => 'Pode ver faturas de pagamentos',
         ];
     }
 
     public function beforeValidate()
     {
-        $this->booleansToStrictBooleans();
+        if ($this->customer_entity_type == Customer::ENTITY_TYPE_PF && empty($this->customer_name)) {
+            $this->customer_name = $this->user_name;
+        }
 
         return parent::beforeValidate();
     }
@@ -150,6 +135,11 @@ class Account extends Model
                 }
 
                 $user->customer_id = $customer->id;
+                $user->is_admin = true;
+                $user->can_insert_credits = true;
+                $user->can_order_document = true;
+                $user->can_see_invoices = true;
+                $user->can_see_reports = true;
                 if (!$user->save()) {
                     throw new \Exception("User save failed");
                 }
@@ -189,17 +179,4 @@ class Account extends Model
 
         $this->addErrors($accountErrors);
     }
-
-    /**
-     * Converts fields to strict booleans. As we always receive strings they are to strict boolean for validation and error message porposes
-     */
-    private function booleansToStrictBooleans()
-    {
-        $this->user_is_admin = boolval($this->user_is_admin);
-        $this->user_can_insert_credits = boolval($this->user_can_insert_credits);
-        $this->user_can_order_document = boolval($this->user_can_order_document);
-        $this->user_can_see_invoices = boolval($this->user_can_see_invoices);
-        $this->user_can_see_reports = boolval($this->user_can_see_reports);
-    }
-
 }
