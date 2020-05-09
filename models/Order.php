@@ -10,13 +10,13 @@ use api\models\User;
  *
  * @property int $id
  * @property int $user_id
- * @property int $document_type_id
+ * @property int $service_id
  * @property int $current_status_id
  * @property date $placed_time
  *
  * @property OrderHistory[] $orderHistories
  * @property OrderStatuses $currentStatus
- * @property DocumentTypes $documentType
+ * @property Service $service
  * @property User $user
  * @property Customer $customer
  */
@@ -35,11 +35,11 @@ class Order extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['user_id', 'document_type_id', 'current_status_id'], 'required'],
-            [['user_id', 'document_type_id', 'current_status_id'], 'integer'],
+            [['user_id', 'service_id', 'current_status_id'], 'required'],
+            [['user_id', 'service_id', 'current_status_id'], 'integer'],
             [['placed_time'], 'safe'],
             [['current_status_id'], 'exist', 'skipOnError' => true, 'targetClass' => OrderStatus::className(), 'targetAttribute' => ['current_status_id' => 'id']],
-            [['document_type_id'], 'exist', 'skipOnError' => true, 'targetClass' => DocumentType::className(), 'targetAttribute' => ['document_type_id' => 'id']],
+            [['service_id'], 'exist', 'skipOnError' => true, 'targetClass' => Service::className(), 'targetAttribute' => ['service_id' => 'id']],
             [['user_id'], 'exist', 'skipOnError' => true, 'targetClass' => User::className(), 'targetAttribute' => ['user_id' => 'id']],
         ];
     }
@@ -54,7 +54,6 @@ class Order extends \yii\db\ActiveRecord
         return [
             'id' => 'ID',
             'user_id' => 'User ID',
-            'document_type_id' => 'Document Type ID',
             'current_status_id' => 'Current Status ID',
             'placed_time' => 'Placed Time',
         ];
@@ -67,7 +66,7 @@ class Order extends \yii\db\ActiveRecord
      */
     public function extraFields()
     {
-        return ['histories', 'currentStatus', 'documentType', 'user', 'customer'];
+        return ['histories', 'currentStatus', 'service', 'user', 'customer'];
     }
 
     /**
@@ -89,9 +88,9 @@ class Order extends \yii\db\ActiveRecord
     /**
      * @return \yii\db\ActiveQuery
      */
-    public function getDocumentType()
+    public function getService()
     {
-        return $this->hasOne(DocumentType::className(), ['id' => 'document_type_id']);
+        return $this->hasOne(Service::className(), ['id' => 'service_id']);
     }
 
     /**

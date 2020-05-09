@@ -1,5 +1,6 @@
 <?php
 
+use api\models\Service;
 use yii\db\Migration;
 
 class m200428_185343_create_tables extends Migration
@@ -34,7 +35,7 @@ class m200428_185343_create_tables extends Migration
             'last_login' => $this->dateTime(),
             'last_api_request' => $this->dateTime(),
             'is_admin' => $this->boolean()->notNull()->defaultValue(false),
-            'can_order_document' => $this->boolean()->notNull()->defaultValue(false),
+            'can_order_services' => $this->boolean()->notNull()->defaultValue(false),
             'can_insert_credits' => $this->boolean()->notNull()->defaultValue(false),
             'can_see_reports' => $this->boolean()->notNull()->defaultValue(false),
             'can_see_invoices' => $this->boolean()->notNull()->defaultValue(false),
@@ -62,9 +63,10 @@ class m200428_185343_create_tables extends Migration
             'id'
         );
 
-        $this->createTable('document_types', [
+        $this->createTable('services', [
             'id' => $this->primaryKey()->notNull(),
-            'name' => $this->string(120)
+            'name' => $this->string(120),
+            'type' => "ENUM('Certificate', 'Research')"
         ]);
 
         $this->createTable('order_statuses', [
@@ -76,7 +78,7 @@ class m200428_185343_create_tables extends Migration
             'id' => $this->bigPrimaryKey()->notNull(),
             'customer_id' => $this->integer()->notNull(),
             'user_id' => $this->integer()->notNull(),
-            'document_type_id' => $this->integer()->notNull(),
+            'document_id' => $this->integer()->notNull(),
             'current_status_id' => $this->integer()->notNull(),
             // 'name' => $this->string(80)->notNull(),
             'priority' => $this->boolean()->defaultValue(false),
@@ -114,16 +116,16 @@ class m200428_185343_create_tables extends Migration
         );
 
         $this->createIndex(
-            'idx-orders-document_type_id',
+            'idx-orders-document_id',
             'orders',
-            'document_type_id'
+            'document_id'
         );
 
         $this->addForeignKey(
-            'fk-orders-document_type_id',
+            'fk-orders-document_id',
             'orders',
-            'document_type_id',
-            'document_types',
+            'document_id',
+            'services',
             'id'
         );
 
@@ -259,17 +261,21 @@ class m200428_185343_create_tables extends Migration
 
     private function populate()
     {
-        $this->insert('document_types', ['name' => 'Certidão de nascimento']);
-        $this->insert('document_types', ['name' => 'Certidão de óbito']);
-        $this->insert('document_types', ['name' => 'Certidão de casamento']);
-        $this->insert('document_types', ['name' => 'Certidão de protesto']);
-        $this->insert('document_types', ['name' => 'Certidão de procuração']);
-        $this->insert('document_types', ['name' => 'Certidão de escritura']);
-        $this->insert('document_types', ['name' => 'Certidão negativa de débitos trabalhistas - CNDT']);
-        $this->insert('document_types', ['name' => 'Certidão negativa de débitos de tributos federais e dívida ativa da União']);
-        $this->insert('document_types', ['name' => 'Certidão Negativa de débitos tributários não Inscritos em dívida ativa(São Paulo - Estadual)']);
-        $this->insert('document_types', ['name' => 'Certidão negativa do FGTS (Certificado de regularidade fiscal CRF)']);
-        $this->insert('document_types', ['name' => 'ITR - Certidão de débitos relativos a tributos federais e à dívida ativa da União de imóvel rural']);
+        $this->insert('services', ['id' => 1, 'name' => 'Nascimento', 'type' => Service::TYPE_CERTIFICATE]);
+        $this->insert('services', ['id' => 2, 'name' => 'Casamento', 'type' => Service::TYPE_CERTIFICATE]);
+        $this->insert('services', ['id' => 3, 'name' => 'Óbito', 'type' => Service::TYPE_CERTIFICATE]);
+        $this->insert('services', ['id' => 4, 'name' => 'Protesto', 'type' => Service::TYPE_CERTIFICATE]);
+        $this->insert('services', ['id' => 5, 'name' => 'Imóvel', 'type' => Service::TYPE_CERTIFICATE]);
+        $this->insert('services', ['id' => 6, 'name' => 'Negativa de Débitos Trabalhistas - CNDT', 'type' => Service::TYPE_CERTIFICATE]);
+        $this->insert('services', ['id' => 7, 'name' => 'Negativa de Débitos de Tributos Federais e Dívida Ativa da União', 'type' => Service::TYPE_CERTIFICATE]);
+        $this->insert('services', ['id' => 8, 'name' => 'Negativa de Débitos Tributários (São Paulo - Estadual) Não Inscritos em Dívida Ativa', 'type' => Service::TYPE_CERTIFICATE]);
+        $this->insert('services', ['id' => 9, 'name' => 'Negativa do FGTS (Certificado de Regularidade Fiscal CRF)"', 'type' => Service::TYPE_CERTIFICATE]);
+        $this->insert('services', ['id' => 10, 'name' => 'ITR - Débitos Relativos a Tributos Federais e à Dívida Ativa da União de Imóvel Rural', 'type' => Service::TYPE_CERTIFICATE]);
+        $this->insert('services', ['id' => 11, 'name' => 'Procuração', 'type' => Service::TYPE_RESEARCH]);
+        $this->insert('services', ['id' => 12, 'name' => 'Escritura', 'type' => Service::TYPE_RESEARCH]);
+        $this->insert('services', ['id' => 13, 'name' => 'Interdição', 'type' => Service::TYPE_CERTIFICATE]);
+        $this->insert('services', ['id' => 16, 'name' => 'Bens', 'type' => Service::TYPE_RESEARCH]);
+        $this->insert('services', ['id' => 17, 'name' => 'Junta Comercial', 'type' => Service::TYPE_RESEARCH]);
 
         $this->insert('order_statuses', ['name' => 'Em andamento']);
         $this->insert('order_statuses', ['name' => 'Localizado']);
@@ -338,7 +344,7 @@ class m200428_185343_create_tables extends Migration
         $this->insert('orders', [
             'user_id' => 1,
             'customer_id' => 1,
-            'document_type_id' => 1,
+            'document_id' => 1,
             'current_status_id' => 4,
             'estimated_time' => $estimatedTime->format('Y-m-d H:i:s')
         ]);
@@ -366,7 +372,7 @@ class m200428_185343_create_tables extends Migration
         $this->insert('orders', [
             'user_id' => 1,
             'customer_id' => 1,
-            'document_type_id' => 2,
+            'document_id' => 2,
             'current_status_id' => 2,
             'estimated_time' => $estimatedTime->format('Y-m-d H:i:s')
         ]);
@@ -384,7 +390,7 @@ class m200428_185343_create_tables extends Migration
         $this->insert('orders', [
             'user_id' => 2,
             'customer_id' => 1,
-            'document_type_id' => 3,
+            'document_id' => 3,
             'current_status_id' => 1,
             'estimated_time' => $estimatedTime->format('Y-m-d H:i:s')
         ]);
@@ -397,7 +403,7 @@ class m200428_185343_create_tables extends Migration
         $this->insert('orders', [
             'user_id' => 3,
             'customer_id' => 2,
-            'document_type_id' => 7,
+            'document_id' => 7,
             'current_status_id' => 1,
             'estimated_time' => $estimatedTime->format('Y-m-d H:i:s')
         ]);
@@ -472,7 +478,7 @@ class m200428_185343_create_tables extends Migration
             'users' => 'fk-users-customer_id',
             'orders' =>'fk-orders-user_id',
             'orders' =>'fk-orders-customer_id',
-            'orders' => 'fk-orders-document_type_id',
+            'orders' => 'fk-orders-document_id',
             'orders' => 'fk-orders-current_status_id',
             'order_history' => 'fk-order_history-order_id',
             'order_history' => 'fk-order_history-status_id',
@@ -491,7 +497,7 @@ class m200428_185343_create_tables extends Migration
             'users' => 'idx-users-password',
             'orders' =>'idx-orders-user_id',
             'orders' =>'idx-orders-customer_id',
-            'orders' => 'idx-orders-document_type_id',
+            'orders' => 'idx-orders-document_id',
             'orders' => 'idx-orders-current_status_id',
             'order_history' => 'idx-order_history-order_id',
             'order_history' => 'idx-order_history-status_id',
@@ -506,7 +512,7 @@ class m200428_185343_create_tables extends Migration
         }
 
 
-        $tables = ['invoices', 'order_history', 'orders', 'order_statuses', 'document_types', 'users', 'customers', 'password_reset'];
+        $tables = ['invoices', 'order_history', 'orders', 'order_statuses', 'services', 'users', 'customers', 'password_reset'];
 
         foreach ($tables as $table) {
             $this->dropTable($table);

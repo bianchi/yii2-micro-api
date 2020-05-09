@@ -28,20 +28,21 @@ class Customer extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['name', 'document_number', 'entity_type'], 'required'],
+            [['name', 'service_number', 'entity_type'], 'required'],
             [['entity_type'], 'string'],
             [['max_users'], 'integer'],
             [['name'], 'string', 'max' => 100],
-            [['document_number'], 'string', 'max' => 14],
+            [['service_number'], 'string', 'max' => 14],
             [['address_zip_code', 'address_number'], 'string', 'max' => 8],
             [['address_neighborhood'], 'string', 'max' => 80],
             [['address_public_place', 'address_city', 'key', 'secret'], 'string', 'max' => 120],
             [['address_uf'], 'string', 'max' => 2],
             [['address_complement'], 'string', 'max' => 60],
-            [['document_number'], CpfValidator::className(), 'when' => function($model) {
+            [['entity_type'], 'in', 'range' => [self::ENTITY_TYPE_PF, self::ENTITY_TYPE_PJ]],
+            [['service_number'], CpfValidator::className(), 'when' => function($model) {
                 return $model->entity_type == self::ENTITY_TYPE_PF;
             }],
-            [['document_number'], CnpjValidator::className(), 'when' => function($model) {
+            [['service_number'], CnpjValidator::className(), 'when' => function($model) {
                 return $model->entity_type == self::ENTITY_TYPE_PJ;
             }]
         ];
@@ -54,7 +55,7 @@ class Customer extends \yii\db\ActiveRecord
             'name' => 'Nome',
             'corporate_name' => 'Razão social',
             'entity_type' => 'Entidade fiscal',
-            'document_number' => 'CPF/CNPJ',
+            'service_number' => 'CPF/CNPJ',
             'address_zip_code' => 'CEP',
             'address_public_place' => 'Logradouro',
             'address_number' => 'Número',

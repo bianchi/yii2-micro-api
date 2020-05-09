@@ -10,13 +10,13 @@ use yii\data\ActiveDataProvider;
 class OrderSearch extends Model 
 {
     public $id;
-    public $document_type_id;
+    public $service_id;
     public $current_status_id;
     
     public function rules()
     {
         return [
-            [['id', 'document_type_id', 'current_status_id'], 'integer'],
+            [['id', 'service_id', 'current_status_id'], 'integer'],
         ];
     }
 

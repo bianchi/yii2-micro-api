@@ -1,0 +1,1 @@
+Negativa de Débitos de Tributos Federais e Dívida Ativa da União

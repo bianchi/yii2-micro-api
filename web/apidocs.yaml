@@ -121,8 +121,8 @@ paths:
                 is_admin:
                   description: 'Whether user is an admin'
                   type: boolean
-                can_order_document:
-                  description: 'Whether user can order documents/searchs'
+                can_order_services:
+                  description: 'Whether user can order services/searchs'
                   type: boolean
                 can_insert_credits:
                   description: 'Whether user can insert credits'
@@ -181,8 +181,8 @@ paths:
                 is_admin:
                   description: 'Whether user is an admin'
                   type: boolean
-                can_order_document:
-                  description: 'Whether user can order documents/searchs'
+                can_order_services:
+                  description: 'Whether user can order services/searchs'
                   type: boolean
                 can_insert_credits:
                   description: 'Whether user can insert credits'

@@ -13,7 +13,7 @@ class Account extends Model
     public $customer_id;
     public $customer_entity_type;
     public $customer_name;
-    public $customer_document_number;
+    public $customer_service_number;
     public $customer_address_zip_code;
     public $customer_address_number;
     public $customer_address_public_place;
@@ -27,7 +27,7 @@ class Account extends Model
     public $user_email;
     public $user_password;
     public $user_is_admin;
-    public $user_can_order_document;
+    public $user_can_order_service;
     public $user_can_insert_credits;
     public $user_can_see_reports;
     public $user_can_see_invoices;
@@ -40,16 +40,16 @@ class Account extends Model
         return [
             [['customer_entity_type', 'customer_name', 'user_name', 'user_email', 'user_password'], 'required'],
             [['customer_name'], 'string', 'max' => 100],
-            [['customer_document_number'], 'string', 'max' => 14],
+            [['customer_service_number'], 'string', 'max' => 14],
             [['customer_address_zip_code', 'customer_address_number'], 'string', 'max' => 8],
             [['customer_address_neighborhood'], 'string', 'max' => 80],
             [['customer_address_public_place', 'customer_address_city'], 'string', 'max' => 120],
             [['customer_address_uf'], 'string', 'max' => 2],
             [['customer_address_complement'], 'string', 'max' => 60],
-            [['customer_document_number'], CpfValidator::className(), 'when' => function($model) {
+            [['customer_service_number'], CpfValidator::className(), 'when' => function($model) {
                 return $model->customer_entity_type == Customer::ENTITY_TYPE_PF;
             }],
-            [['customer_document_number'], CnpjValidator::className(), 'when' => function($model) {
+            [['customer_service_number'], CnpjValidator::className(), 'when' => function($model) {
                 return $model->customer_entity_type == Customer::ENTITY_TYPE_PJ;
             }],
             [['user_name'], 'string', 'max' => 60],
@@ -70,7 +70,7 @@ class Account extends Model
             'customer_address_public_place' => 'Logradouro',
             'customer_address_number' => 'Número',
             'customer_address_complement' => 'Complemento',
-            'customer_document_number' => 'CPF/CNPJ',
+            'customer_service_number' => 'CPF/CNPJ',
             'customer_address_neighborhood' => 'Bairro',
             'customer_address_city' => 'Cidade',
             'customer_address_uf' => 'UF',
@@ -137,7 +137,7 @@ class Account extends Model
                 $user->customer_id = $customer->id;
                 $user->is_admin = true;
                 $user->can_insert_credits = true;
-                $user->can_order_document = true;
+                $user->can_order_services = true;
                 $user->can_see_invoices = true;
                 $user->can_see_reports = true;
                 if (!$user->save()) {

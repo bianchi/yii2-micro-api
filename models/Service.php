@@ -5,18 +5,21 @@ namespace api\models;
 use Yii;
 
 /**
- * This is the model class for table "document_types".
+ * This is the model class for table "services".
  *
  * @property int $id
  * @property string $name
  *
  * @property Orders[] $orders
  */
-class DocumentType extends \yii\db\ActiveRecord
+class Service extends \yii\db\ActiveRecord
 {
+    const TYPE_RESEARCH = 'Research';
+    const TYPE_CERTIFICATE = 'Certificate';
+
     public static function tableName()
     {
-        return 'document_types';
+        return 'services';
     }
 
     /**
@@ -28,6 +31,7 @@ class DocumentType extends \yii\db\ActiveRecord
     {
         return [
             [['name'], 'string', 'max' => 120],
+            [['type'], 'in', 'range' => [self::TYPE_RESEARCH, self::TYPE_CERTIFICATE]],
         ];
     }
 
@@ -46,6 +50,17 @@ class DocumentType extends \yii\db\ActiveRecord
 
     public function getOrders()
     {
-        return $this->hasMany(Order::className(), ['document_type_id' => 'id']);
+        return $this->hasMany(Order::className(), ['service_id' => 'id']);
+    }
+
+    public function getFullname()
+    {
+        if ($this->type == self::TYPE_CERTIFICATE) {
+            return 'Certidão de ' . $this->name;
+        } elseif ($this->type == self::TYPE_RESEARCH) {
+            return 'Pesquisa de ' . $this->name;
+        }
+
+        return $this->name;
     }
 }

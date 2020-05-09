@@ -1,0 +1,1 @@
+Negativa do FGTS (Certificado de Regularidade Fiscal CRF)

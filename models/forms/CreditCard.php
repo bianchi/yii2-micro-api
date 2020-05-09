@@ -8,7 +8,7 @@ namespace api\models\forms;
  * @property string $holder_name
  * @property string $due_date
  * @property string $cvv
- * @property string $document_number
+ * @property string $service_number
  *
  */
 class CreditCard extends \yii\db\ActiveRecord
@@ -18,7 +18,7 @@ class CreditCard extends \yii\db\ActiveRecord
         return [
             [['number'], 'integer'],
             [['holder_name'], 'string', 'max' => 120],
-            [['document_number'], 'string', 'max' => 15],
+            [['service_number'], 'string', 'max' => 15],
             [['cvv'], 'string', 'max' => 4],
             [['due_date'], 'date']
         ];
@@ -30,7 +30,7 @@ class CreditCard extends \yii\db\ActiveRecord
             'number' => 'Número do cartão',
             'holder_name' => 'Nome do titular',
             'cvv' => 'CVV',
-            'document_number' => 'CPF ou CNPJ',
+            'service_number' => 'CPF ou CNPJ',
         ];
     }
 }

@@ -14,7 +14,7 @@ use yii\web\ForbiddenHttpException;
  * @property string $password
  * @property string $last_login
  * @property int $is_admin
- * @property int $can_order_document
+ * @property int $can_order_services
  * @property int $can_insert_credits
  * @property int $can_see_reports
  * @property int $can_see_invoices
@@ -45,8 +45,8 @@ class User extends \yii\db\ActiveRecord implements \yii\web\IdentityInterface
         return [
             [['name', 'email', 'password', 'customer_id'], 'required'],
             [['last_login', 'last_api_request'], 'safe'],
-            [['is_admin', 'can_order_document', 'can_insert_credits', 'can_see_reports', 'can_see_invoices'], 'boolean', 'trueValue' => true, 'falseValue' => false, 'strict' => true],
-            [['is_admin', 'can_order_document', 'can_insert_credits', 'can_see_reports', 'can_see_invoices'], 'default', 'value'=> true],
+            [['is_admin', 'can_order_services', 'can_insert_credits', 'can_see_reports', 'can_see_invoices'], 'boolean', 'trueValue' => true, 'falseValue' => false, 'strict' => true],
+            [['is_admin', 'can_order_services', 'can_insert_credits', 'can_see_reports', 'can_see_invoices'], 'default', 'value'=> true],
             [['customer_id'], 'integer'],
             [['name'], 'string', 'max' => 60],
             [['email'], 'email'],
@@ -71,7 +71,7 @@ class User extends \yii\db\ActiveRecord implements \yii\web\IdentityInterface
             'password' => 'Senha',
             'last_login' => 'Último login',
             'is_admin' => 'É administrador',
-            'can_order_document' => 'Pode requisitar documentos',
+            'can_order_services' => 'Pode requisitar serviceos',
             'can_insert_credits' => 'Pode inserir créditos',
             'can_see_reports' => 'Pode visualizar relatórios',
             'can_see_invoices' => 'Pode ver faturas de pagamentos',
@@ -196,7 +196,7 @@ class User extends \yii\db\ActiveRecord implements \yii\web\IdentityInterface
     {
         $this->is_admin = boolval($this->is_admin);
         $this->can_insert_credits = boolval($this->can_insert_credits);
-        $this->can_order_document = boolval($this->can_order_document);
+        $this->can_order_services = boolval($this->can_order_services);
         $this->can_see_invoices = boolval($this->can_see_invoices);
         $this->can_see_reports = boolval($this->can_see_reports);
         $this->deleted = boolval($this->deleted);

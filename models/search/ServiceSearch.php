@@ -2,11 +2,11 @@
 
 namespace api\models\search;
 
-use api\models\DocumentType;
+use api\models\Service;
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
 
-class DocumentTypeSearch extends Model 
+class ServiceSearch extends Model 
 {
     public $category_id;
     
@@ -19,7 +19,7 @@ class DocumentTypeSearch extends Model
 
     public function search($params)
     {
-        $query = DocumentType::find();
+        $query = Service::find();
 
         $dataProvider = new ActiveDataProvider([
             'query' => $query,

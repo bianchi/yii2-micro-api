@@ -84,7 +84,7 @@ $config = [
                 ],
                 [
                     'class' => 'yii\rest\UrlRule', 
-                    'controller' => 'document-type', 
+                    'controller' => 'service', 
                     'patterns' => [
                         'GET' => 'index',
                     ],
