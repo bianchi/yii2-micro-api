@@ -18,6 +18,7 @@ class BaseController extends ActiveController
             'password-reset/create',
             'password-reset/view',
             'password-reset/change-password',
+            'federative-unit/index',
         ];
 
         if (!parent::beforeAction($action)) {

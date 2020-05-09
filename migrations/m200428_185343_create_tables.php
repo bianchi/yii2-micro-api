@@ -19,8 +19,8 @@ class m200428_185343_create_tables extends Migration
             'address_neighborhood' => $this->string(80),
             'address_city' => $this->string(120),
             'address_uf' => $this->string(2),
-            'key' => $this->string(120),
-            'secret' => $this->string(120),
+            'backoffice_email' => $this->string(120),
+            'backoffice_password' => $this->string(120),
             'max_users' => $this->integer()->notNull()->defaultValue(10)
         ]);
 

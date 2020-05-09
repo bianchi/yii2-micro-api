@@ -2,7 +2,6 @@
 
 namespace api\controllers;
 
-use api\models\Customer;
 use api\models\forms\Account;
 use yii\helpers\Url;
 use yii\web\ServerErrorHttpException;

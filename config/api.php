@@ -85,6 +85,19 @@ $config = [
                 [
                     'class' => 'yii\rest\UrlRule', 
                     'controller' => 'document-type', 
+                    'patterns' => [
+                        'GET' => 'index',
+                    ],
+                ],
+                [
+                    'class' => 'yii\rest\UrlRule', 
+                    'controller' => 'federative-unit', 
+                    'patterns' => [
+                        'GET {uf}' => 'cities',
+                    ],
+                    'tokens' => [
+                        '{uf}' => '<uf:[a-zA-Z]{2}>',
+                    ]
                 ],
             ],
         ],
