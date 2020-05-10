@@ -40,4 +40,13 @@ return array (
       '@yii/swiftmailer' => $vendorDir . '/yiisoft/yii2-swiftmailer/src',
     ),
   ),
+  'yii2mod/yii2-validators' => 
+  array (
+    'name' => 'yii2mod/yii2-validators',
+    'version' => '1.2.0.0',
+    'alias' => 
+    array (
+      '@yii2mod/validators' => $vendorDir . '/yii2mod/yii2-validators',
+    ),
+  ),
 );

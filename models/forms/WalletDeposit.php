@@ -8,6 +8,7 @@ use api\traits\SetAttributesWithPrefix;
 use yii\base\Model;
 use api\models\User;
 use api\traits\SetErrorsAddingPrefix;
+use yii2mod\validators\ECCValidator;
 
 class WalletDeposit extends Model
 {
@@ -30,8 +31,9 @@ class WalletDeposit extends Model
             [['invoice_payment_method', 'invoice_amount', 'credit_card_number', 'credit_card_holder_name', 'credit_card_document_number', 'credit_card_due_date', 'credit_card_cvv'], 'required'],
             [['invoice_payment_method'], 'in', 'range' => [Invoice::PAYMENT_METHOD_CREDIT_CARD, Invoice::PAYMENT_METHOD_BOLETO]],
             [['invoice_amount'], 'number'],
+            [['credit_card_number'], ECCValidator::className(), 'message' => 'Número do cartão inválido'],
             [['credit_card_number'], 'integer'],
-            [['credit_card_number'], 'string', 'max' => 16],
+            [['credit_card_number'], 'string', 'max' => 20],
             [['credit_card_holder_name'], 'string', 'max' => 120],
             [['credit_card_document_number'], 'string', 'max' => 15],
             [['credit_card_cvv'], 'string', 'max' => 4],

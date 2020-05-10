@@ -8,8 +8,8 @@ class ComposerStaticInit1b108de73171e773e250dd233154d74a
 {
     public static $files = array (
         '0e6d7bf4a5811bfa5cf40c5ccd6fae6a' => __DIR__ . '/..' . '/symfony/polyfill-mbstring/bootstrap.php',
-        '25072dd6e2470089de65ae7bf11d3109' => __DIR__ . '/..' . '/symfony/polyfill-php72/bootstrap.php',
         '2cffec82183ee1cea088009cef9a6fc3' => __DIR__ . '/..' . '/ezyang/htmlpurifier/library/HTMLPurifier.composer.php',
+        '25072dd6e2470089de65ae7bf11d3109' => __DIR__ . '/..' . '/symfony/polyfill-php72/bootstrap.php',
         'f598d06aa772fa33d905e87be6398fb1' => __DIR__ . '/..' . '/symfony/polyfill-intl-idn/bootstrap.php',
         '7b11c4dc42b3b3023073cb14e519683c' => __DIR__ . '/..' . '/ralouphie/getallheaders/src/getallheaders.php',
         'def43f6c87e4f8dfd0c9e1b1bab14fe8' => __DIR__ . '/..' . '/symfony/polyfill-iconv/bootstrap.php',
@@ -29,6 +29,7 @@ class ComposerStaticInit1b108de73171e773e250dd233154d74a
             'yii\\composer\\' => 13,
             'yii\\bootstrap\\' => 14,
             'yii\\' => 4,
+            'yii2mod\\validators\\' => 19,
         ),
         'c' => 
         array (
@@ -50,6 +51,7 @@ class ComposerStaticInit1b108de73171e773e250dd233154d74a
             'GuzzleHttp\\Psr7\\' => 16,
             'GuzzleHttp\\Promise\\' => 19,
             'GuzzleHttp\\' => 11,
+            'Giggsey\\Locale\\' => 15,
         ),
         'E' => 
         array (
@@ -90,6 +92,10 @@ class ComposerStaticInit1b108de73171e773e250dd233154d74a
         array (
             0 => __DIR__ . '/..' . '/yiisoft/yii2',
         ),
+        'yii2mod\\validators\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/yii2mod/yii2-validators',
+        ),
         'cebe\\markdown\\' => 
         array (
             0 => __DIR__ . '/..' . '/cebe/markdown',
@@ -126,6 +132,10 @@ class ComposerStaticInit1b108de73171e773e250dd233154d74a
         array (
             0 => __DIR__ . '/..' . '/guzzlehttp/guzzle/src',
         ),
+        'Giggsey\\Locale\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/giggsey/locale/src',
+        ),
         'Egulias\\EmailValidator\\' => 
         array (
             0 => __DIR__ . '/..' . '/egulias/email-validator/EmailValidator',
@@ -137,6 +147,13 @@ class ComposerStaticInit1b108de73171e773e250dd233154d74a
     );
 
     public static $prefixesPsr0 = array (
+        'l' => 
+        array (
+            'libphonenumber' => 
+            array (
+                0 => __DIR__ . '/..' . '/giggsey/libphonenumber-for-php/src',
+            ),
+        ),
         'H' => 
         array (
             'HTMLPurifier' => 

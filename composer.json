@@ -3,7 +3,8 @@
         "yiisoft/yii2": "~2.0.0",
         "yiibr/yii2-br-validator": "^1.0",
         "yiisoft/yii2-swiftmailer": "~2.1.0",
-        "guzzlehttp/guzzle": "~6.0"
+        "guzzlehttp/guzzle": "~6.0",
+        "yii2mod/yii2-validators": "*"
     },
     "require-dev": {
         "yiisoft/yii2-gii": "~2.0.0"
