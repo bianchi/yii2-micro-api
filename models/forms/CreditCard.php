@@ -2,25 +2,38 @@
 
 namespace api\models\forms;
 
+use api\traits\SetAttributesWithPrefix;
+use yii\base\Model;
+
 /**
  *
  * @property string $number
  * @property string $holder_name
  * @property string $due_date
  * @property string $cvv
- * @property string $service_number
+ * @property string $document_number
  *
  */
-class CreditCard extends \yii\db\ActiveRecord
+class CreditCard extends Model
 {
+    use SetAttributesWithPrefix;
+    
+    public $holder_name;
+    public $number;
+    public $document_number;
+    public $due_date;
+    public $cvv;
+
     public function rules()
     {
         return [
+            [['number', 'holder_name', 'document_number', 'due_date', 'cvv'], 'required'],
             [['number'], 'integer'],
+            [['number'], 'string', 'max' => 16],
             [['holder_name'], 'string', 'max' => 120],
-            [['service_number'], 'string', 'max' => 15],
+            [['document_number'], 'string', 'max' => 15],
             [['cvv'], 'string', 'max' => 4],
-            [['due_date'], 'date']
+            [['due_date'], 'date', 'format' => 'Y-m']
         ];
     }
     
@@ -30,7 +43,7 @@ class CreditCard extends \yii\db\ActiveRecord
             'number' => 'Número do cartão',
             'holder_name' => 'Nome do titular',
             'cvv' => 'CVV',
-            'service_number' => 'CPF ou CNPJ',
+            'document_number' => 'CPF/CNPJ',
         ];
     }
 }

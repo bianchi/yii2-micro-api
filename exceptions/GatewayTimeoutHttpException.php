@@ -1,6 +1,6 @@
 <?php
 
-namespace api\models\exceptions;
+namespace api\exceptions;
 
 use yii\web\HttpException;
 

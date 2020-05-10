@@ -1,5 +1,6 @@
 <?php
 
+use api\models\Invoice;
 use api\models\Service;
 use yii\db\Migration;
 
@@ -186,6 +187,7 @@ class m200428_185343_create_tables extends Migration
             'placed_time' => $this->dateTime()->notNull()->defaultExpression('CURRENT_TIMESTAMP'),
             'approved_time' => $this->dateTime(),
             'amount' => $this->double()->notNull(),
+            'payment_method' => "ENUM('CC', 'BO')",
         ]);
 
         $this->createIndex(
@@ -420,6 +422,7 @@ class m200428_185343_create_tables extends Migration
             'operation' => 'C',
             'placed_time' => date('Y-m-d H:i:s'),
             'approved_time' => date('Y-m-d H:i:s'),
+            'payment_method' => Invoice::PAYMENT_METHOD_CREDIT_CARD
         ]);
 
         $this->insert('invoices', [
@@ -459,6 +462,7 @@ class m200428_185343_create_tables extends Migration
             'operation' => 'C',
             'placed_time' => date('Y-m-d H:i:s'),
             'approved_time' => date('Y-m-d H:i:s'),
+            'payment_method' => Invoice::PAYMENT_METHOD_BOLETO
         ]);
 
         $this->insert('invoices', [

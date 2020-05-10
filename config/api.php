@@ -75,6 +75,13 @@ $config = [
                 ],
                 [
                     'class' => 'yii\rest\UrlRule', 
+                    'controller' => ['wallets' => 'invoice'],
+                    'patterns' => [
+                        'POST deposits' => 'insert-credits',
+                    ],
+                ],
+                [
+                    'class' => 'yii\rest\UrlRule', 
                     'controller' => 'invoice', 
                     'patterns' => [
                         'GET' => 'index',

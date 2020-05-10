@@ -25,17 +25,14 @@ class Invoice extends \yii\db\ActiveRecord
     const OPERATION_CREDIT = 'C';
     const OPERATION_DEBIT = 'D';
 
-    /**
-     * {@inheritdoc}
-     */
+    const PAYMENT_METHOD_CREDIT_CARD = 'CC';
+    const PAYMENT_METHOD_BOLETO = 'BO';
+
     public static function tableName()
     {
         return 'invoices';
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function rules()
     {
         return [
@@ -43,15 +40,13 @@ class Invoice extends \yii\db\ActiveRecord
             [['customer_id', 'user_id', 'order_id'], 'integer'],
             [['operation'], 'string'],
             [['amount'], 'number'],
+            [['payment_method'], 'in', 'range' => [self::PAYMENT_METHOD_CREDIT_CARD, self::PAYMENT_METHOD_BOLETO]],
             [['customer_id'], 'exist', 'skipOnError' => true, 'targetClass' => Customer::className(), 'targetAttribute' => ['customer_id' => 'id']],
             [['order_id'], 'exist', 'skipOnError' => true, 'targetClass' => Order::className(), 'targetAttribute' => ['order_id' => 'id']],
             [['user_id'], 'exist', 'skipOnError' => true, 'targetClass' => User::className(), 'targetAttribute' => ['user_id' => 'id']],
         ];
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function attributeLabels()
     {
         return [

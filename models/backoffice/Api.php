@@ -2,7 +2,7 @@
 
 namespace api\models\backoffice;
 
-use api\models\exceptions\BadGatewayHttpException;
+use api\exceptions\BadGatewayHttpException;
 use GuzzleHttp\Client as Guzzle;
 use api\models\User;
 use GuzzleHttp\Exception\RequestException;

@@ -2,6 +2,7 @@
 
 namespace api\models;
 
+use api\models\traits\SetAttributesWithPrefix;
 use Yii;
 use yii\web\ForbiddenHttpException;
 
@@ -24,6 +25,8 @@ use yii\web\ForbiddenHttpException;
  */
 class User extends \yii\db\ActiveRecord implements \yii\web\IdentityInterface
 {
+    use SetAttributesWithPrefix;
+    
     const SCENARIO_LOGIN = 'Login';
 
     const LOGIN_TOKEN_TIMEOUT_MINUTES = 600;
