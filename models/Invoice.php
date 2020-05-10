@@ -22,6 +22,8 @@ use Yii;
  */
 class Invoice extends \yii\db\ActiveRecord
 {
+    const SCENARIO_INSERT_CREDITS = 'insert-credits';
+
     const OPERATION_CREDIT = 'C';
     const OPERATION_DEBIT = 'D';
 
@@ -40,11 +42,22 @@ class Invoice extends \yii\db\ActiveRecord
             [['customer_id', 'user_id', 'order_id'], 'integer'],
             [['operation'], 'string'],
             [['amount'], 'number'],
+            [['placed_time', 'approved_time'], 'date', 'format' => 'Y-m-d H:i:s'],
             [['payment_method'], 'in', 'range' => [self::PAYMENT_METHOD_CREDIT_CARD, self::PAYMENT_METHOD_BOLETO]],
+            [['payment_method'], 'required', 'on' => self::SCENARIO_INSERT_CREDITS],
             [['customer_id'], 'exist', 'skipOnError' => true, 'targetClass' => Customer::className(), 'targetAttribute' => ['customer_id' => 'id']],
             [['order_id'], 'exist', 'skipOnError' => true, 'targetClass' => Order::className(), 'targetAttribute' => ['order_id' => 'id']],
             [['user_id'], 'exist', 'skipOnError' => true, 'targetClass' => User::className(), 'targetAttribute' => ['user_id' => 'id']],
         ];
+    }
+
+    public function scenarios()
+    {
+        $scenarios = parent::scenarios();
+
+        $scenarios[self::SCENARIO_INSERT_CREDITS] = ['customer_id', 'user_id', 'operation', 'amount', 'payment_method', 'placed_time'];
+
+        return $scenarios;
     }
 
     public function attributeLabels()

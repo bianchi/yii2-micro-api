@@ -3,10 +3,13 @@
 namespace api\controllers;
 
 use api\models\forms\CreditCard;
+use api\models\forms\WalletDeposit;
 use api\models\search\InvoiceSearch;
 use api\models\User;
 use api\models\Invoice;
 use yii\web\ForbiddenHttpException;
+use yii\helpers\Url;
+use yii\web\ServerErrorHttpException;
 
 class InvoiceController extends BaseController
 {
@@ -76,28 +79,18 @@ class InvoiceController extends BaseController
 
     public function actionInsertCredits()
     {
-        $loggedUser = User::findOne(\Yii::$app->user->id);
-
         $this->checkAccess($this->action->id);
 
-        $invoice = new Invoice;
+        $walletDeposit = new WalletDeposit;
+        $walletDeposit->load(\Yii::$app->getRequest()->getBodyParams(), '');
 
-        $invoice->load(\Yii::$app->getRequest()->getBodyParams(), '');
-        $invoice->operation = Invoice::OPERATION_CREDIT;
-        $invoice->user_id = $loggedUser->id;
-        $invoice->customer_id = $loggedUser->customer_id;
-
-        if ($invoice->validate(['payment_method'])) {
-            if ($invoice->payment_method == Invoice::PAYMENT_METHOD_CREDIT_CARD) {
-                $creditCard = new CreditCard;
-                $creditCard->setAttributesWithPrefix(\Yii::$app->getRequest()->getBodyParams(), 'credit_card_');
-
-                if ($creditCard->validate()) {
-                    echo 'chama backoffice';
-                }
-            }
+        if ($walletDeposit->save()) {
+            $response = \Yii::$app->getResponse()->setStatusCode(201);
+            $response->getHeaders()->set('Location', Url::toRoute(['/invoices/' . $walletDeposit->invoice_id], true));
+        } elseif (!$walletDeposit->hasErrors()) {
+            throw new ServerErrorHttpException('Failed to create the object for unknown reason.');
         }
 
-        return $creditCard;
+        return $walletDeposit;
     }
 }
