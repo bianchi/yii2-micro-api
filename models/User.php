@@ -2,7 +2,7 @@
 
 namespace api\models;
 
-use api\models\traits\SetAttributesWithPrefix;
+use api\traits\SetAttributesWithPrefix;
 use Yii;
 use yii\web\ForbiddenHttpException;
 

@@ -3,7 +3,7 @@
 namespace api\models;
 
 use api\models\Invoice;
-use api\models\traits\SetAttributesWithPrefix;
+use api\traits\SetAttributesWithPrefix;
 use yiibr\brvalidator\CnpjValidator;
 use yiibr\brvalidator\CpfValidator;
 
