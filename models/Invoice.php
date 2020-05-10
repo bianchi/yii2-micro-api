@@ -5,6 +5,7 @@ namespace api\models;
 use api\models\Customer;
 use api\models\Order;
 use api\models\User;
+use api\traits\SetAttributesWithPrefix;
 use Yii;
 
 /**
@@ -22,6 +23,8 @@ use Yii;
  */
 class Invoice extends \yii\db\ActiveRecord
 {
+    use SetAttributesWithPrefix;
+    
     const SCENARIO_INSERT_CREDITS = 'insert-credits';
 
     const OPERATION_CREDIT = 'C';
@@ -42,7 +45,7 @@ class Invoice extends \yii\db\ActiveRecord
             [['customer_id', 'user_id', 'order_id'], 'integer'],
             [['operation'], 'string'],
             [['amount'], 'number'],
-            [['placed_time', 'approved_time'], 'date', 'format' => 'Y-m-d H:i:s'],
+            [['placed_time', 'approved_time'], 'date', 'format' => 'php: Y-m-d H:i:s'],
             [['payment_method'], 'in', 'range' => [self::PAYMENT_METHOD_CREDIT_CARD, self::PAYMENT_METHOD_BOLETO]],
             [['payment_method'], 'required', 'on' => self::SCENARIO_INSERT_CREDITS],
             [['customer_id'], 'exist', 'skipOnError' => true, 'targetClass' => Customer::className(), 'targetAttribute' => ['customer_id' => 'id']],

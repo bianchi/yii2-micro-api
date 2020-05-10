@@ -78,6 +78,7 @@ $config = [
                     'controller' => ['wallets' => 'invoice'],
                     'patterns' => [
                         'POST deposits' => 'insert-credits',
+                        'POST deposits/approve' => 'approve-inserted-credits',
                     ],
                 ],
                 [

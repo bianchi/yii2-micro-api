@@ -113,6 +113,11 @@ class Api
         return $this->get('/' . $uf);
     }
 
+    public function insertCredits()
+    {
+        return true;
+    }
+
     private function debug()
     {
         // Grab the client's handler instance.

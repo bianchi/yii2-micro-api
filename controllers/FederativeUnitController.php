@@ -23,8 +23,7 @@ class FederativeUnitController extends BaseController
         $uf = strtoupper($uf);
         $loggedUser = User::findOne(\Yii::$app->user->id);
 
-        // $backofficeApi = new Api($loggedUser->customer->backoffice_email, $loggedUser->customer->backoffice_password);
-        $backofficeApi = new Api('empresa@teste.com', 'Emp@1234!');
+        $backofficeApi = new Api($loggedUser->customer->backoffice_email, $loggedUser->customer->backoffice_password);
         
         $cities = $backofficeApi->getCities($uf);
 

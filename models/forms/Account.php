@@ -35,9 +35,6 @@ class Account extends Model
     public $user_can_see_reports;
     public $user_can_see_invoices;
 
-    public $customer;
-    public $user;
-
     public function rules()
     {
         return [
@@ -95,9 +92,6 @@ class Account extends Model
     public function fields()
     {
         $fields = parent::fields();
-
-        // unset this objects because we don't want to send then in the request
-        unset($fields['customer'], $fields['user']);
 
         // remove password because contains sensitive information
         unset($fields['user_password']);

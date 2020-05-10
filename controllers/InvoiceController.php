@@ -93,4 +93,11 @@ class InvoiceController extends BaseController
 
         return $walletDeposit;
     }
+
+    public function actionApproveInsertedCredits()
+    {
+        echo 'approved hooks';
+        die();
+        $this->checkAccess($this->action->id);
+    }
 }

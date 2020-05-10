@@ -298,6 +298,8 @@ class m200428_185343_create_tables extends Migration
             'address_neighborhood' => 'Jd. Pancera',
             'address_city' => 'Toledo',
             'address_uf' => 'PR',
+            'backoffice_email' => 'empresa@teste.com',
+            'backoffice_password' => 'Emp@1234!'
         ]);
 
         $this->insert('customers', [
@@ -320,7 +322,7 @@ class m200428_185343_create_tables extends Migration
             'phone' => '45999191341',
             'password' => password_hash('123', PASSWORD_BCRYPT),
             'customer_id' => 1,
-            'is_admin' => 1
+            'is_admin' => 1,
         ]);
 
         $this->insert('users', [
