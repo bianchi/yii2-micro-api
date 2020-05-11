@@ -67,7 +67,7 @@ class BaseController extends ActiveController
             'http://localhost:3000',
             'http://localhost:5000',
             'http://localhost:8000',
-            'http://test2.example.com',
+            'https://cbrdoc.netlify.app',
         ];
     }  
     
@@ -81,7 +81,7 @@ class BaseController extends ActiveController
         $behaviors['corsFilter'] =  [
             'class' => \yii\filters\Cors::className(),
             'cors'  => [
-                'Origin'                           => static::allowedDomains(),
+                'Origin'                           => ['*'],
                 'Access-Control-Request-Method' => ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'HEAD', 'OPTIONS'],
                 'Access-Control-Request-Headers' => ['*'],
                 'Access-Control-Allow-Credentials' => true,
