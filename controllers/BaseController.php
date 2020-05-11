@@ -14,10 +14,6 @@ class BaseController extends ActiveController
 
     public function beforeAction($action)
     {
-        if ($action->id == 'options') {
-            return parent::beforeAction($action);
-        }
-
         $noAuthenticationRoutes = [
             'account/create',
             'user/login',
@@ -27,37 +23,39 @@ class BaseController extends ActiveController
             'federative-unit/index',
         ];
 
+        if (!parent::beforeAction($action)) {
+            return false;
+        }
+
         $requestedRoute = $action->controller->module->requestedRoute;
 
-        if (in_array($requestedRoute, $noAuthenticationRoutes)) {
-            return parent::beforeAction($action);
-        }
-
         // if requested route needs authentication, checks token
-        $user = User::findOne(\Yii::$app->user->id);
+        if ($action->id != 'options' && !in_array($requestedRoute, $noAuthenticationRoutes)) {
+            $user = User::findOne(\Yii::$app->user->id);
 
-        if ($user == null) {
-            throw new UnauthorizedHttpException('No logged user');
-        }
+            if ($user == null) {
+                throw new UnauthorizedHttpException('No logged user');
+            }
 
-        $currentDate = new \Datetime;
-        $tokenTimeoutDate = new \Datetime($user->last_api_request);
-        $tokenTimeoutDate->modify('+' . User::LOGIN_TOKEN_TIMEOUT_MINUTES . ' minutes');
+            $currentDate = new \Datetime;
+            $tokenTimeoutDate =  new \Datetime($user->last_api_request);
+            $tokenTimeoutDate->modify('+' . User::LOGIN_TOKEN_TIMEOUT_MINUTES . ' minutes');
 
-        $tokenExpirationDate = new \Datetime($user->last_login);
-        $tokenExpirationDate->modify('+' . User::LOGIN_TOKEN_MAX_DURATION_MINUTES . ' minutes');
+            $tokenExpirationDate =new \Datetime($user->last_login);
+            $tokenExpirationDate->modify('+' . User::LOGIN_TOKEN_MAX_DURATION_MINUTES . ' minutes');
 
-        if ($currentDate > $tokenTimeoutDate) {
-            throw new UnauthorizedHttpException("Token has expired by inactivity, please login again.");
-        } elseif ($currentDate > $tokenExpirationDate) {
-            throw new UnauthorizedHttpException("Token has expired by max duration, please login again.");
-        } else {
-            $user->updateAttributes([
-                'last_api_request' => $currentDate->format('Y-m-d H:i:s'),
-            ]);
-        }
-
-        return parent::beforeAction($action);
+            if ($currentDate > $tokenTimeoutDate) {
+                throw new UnauthorizedHttpException("Token has expired by inactivity, please login again.");
+            } elseif ($currentDate > $tokenExpirationDate) {
+                throw new UnauthorizedHttpException("Token has expired by max duration, please login again.");
+            } else {
+                $user->updateAttributes([
+                    'last_api_request' => $currentDate->format('Y-m-d H:i:s'),
+                ]);
+            }
+        }   
+        
+        return true;
     }
 
     public static function allowedDomains()

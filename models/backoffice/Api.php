@@ -36,7 +36,7 @@ class Api
         $this->guzzle = new Guzzle([
             'headers' => ['Content-Type' => 'application/json'],
             'timeout' => 10,
-            'http_errors' => false
+            // 'http_errors' => false
         ]);
     }
 
