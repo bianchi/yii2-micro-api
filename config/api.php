@@ -103,6 +103,7 @@ $config = [
                         'GET stats' => 'stats',
                         'OPTIONS' => 'options',
                         'OPTIONS {id}' => 'options',
+                        'OPTIONS stats' => 'options',
                     ],
                 ],
                 [
