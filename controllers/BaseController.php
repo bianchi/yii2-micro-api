@@ -11,7 +11,7 @@ use yii\web\UnauthorizedHttpException;
 class BaseController extends ActiveController
 {
     public $enableCsrfValidation = false;
-    
+
     public function beforeAction($action)
     {
         if ($action->id == 'options') {
@@ -59,6 +59,17 @@ class BaseController extends ActiveController
         
         return parent::beforeAction($action);
     }
+
+    public static function allowedDomains()
+{
+    return [
+        // '*',                        // star allows all domains
+        'http://localhost:3000',
+        'http://localhost:5000',
+        'http://localhost:8000',
+        'http://test2.example.com',
+    ];
+}  
     
     public function behaviors()
     {
@@ -67,17 +78,17 @@ class BaseController extends ActiveController
         $auth = $behaviors['authenticator'];
         unset($behaviors['authenticator']);
 
-        $behaviors['corsFilter'] = [
-            'class' => Cors::className(),
-            'cors' => ['Origin' => ['*'], 'Access-Control-Request-Method' => ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'HEAD', 'OPTIONS'], 'Access-Control-Request-Headers' => ['*'], 'Access-Control-Allow-Credentials' => true, 'Access-Control-Max-Age' => 86400, 'Access-Control-Expose-Headers' => []]
-            // 'cors' => [
-            //     [
-            //         'Access-Control-Allow-Credentials' => true,
-            //         'Access-Control-Expose-Headers' => ['X-Pagination-Total-Count','X-Pagination-Page-Count', 'X-Pagination-Current-Page', 'X-Pagination-Per-Page'],
-            //     ]
-            // ]
-        ];
+        $behaviors['corsFilter'] =  [
+            'class' => \yii\filters\Cors::className(),
+            'cors'  => [
+                // restrict access to domains:
+                'Origin'                           => static::allowedDomains(),
+                'Access-Control-Request-Method'    => ['POST'],
+                'Access-Control-Allow-Credentials' => true,
+                'Access-Control-Max-Age'           => 3600,                 // Cache (seconds)
 
+            ],
+        ];
         $behaviors['authenticator'] = $auth;
         $behaviors['authenticator'] = [
             'class' => HttpBearerAuth::className(),
