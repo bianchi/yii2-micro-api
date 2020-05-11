@@ -1,11 +1,11 @@
-<?php 
+<?php
 
 namespace api\controllers;
 
-use yii\filters\auth\HttpBearerAuth;
-use yii\rest\ActiveController;
 use api\models\User;
+use yii\filters\auth\HttpBearerAuth;
 use yii\filters\Cors;
+use yii\rest\ActiveController;
 use yii\web\UnauthorizedHttpException;
 
 class BaseController extends ActiveController
@@ -41,10 +41,10 @@ class BaseController extends ActiveController
         }
 
         $currentDate = new \Datetime;
-        $tokenTimeoutDate =  new \Datetime($user->last_api_request);
+        $tokenTimeoutDate = new \Datetime($user->last_api_request);
         $tokenTimeoutDate->modify('+' . User::LOGIN_TOKEN_TIMEOUT_MINUTES . ' minutes');
 
-        $tokenExpirationDate =new \Datetime($user->last_login);
+        $tokenExpirationDate = new \Datetime($user->last_login);
         $tokenExpirationDate->modify('+' . User::LOGIN_TOKEN_MAX_DURATION_MINUTES . ' minutes');
 
         if ($currentDate > $tokenTimeoutDate) {
@@ -56,7 +56,7 @@ class BaseController extends ActiveController
                 'last_api_request' => $currentDate->format('Y-m-d H:i:s'),
             ]);
         }
-        
+
         return parent::beforeAction($action);
     }
 
@@ -69,8 +69,8 @@ class BaseController extends ActiveController
             'http://localhost:8000',
             'https://cbrdoc.netlify.app',
         ];
-    }  
-    
+    }
+
     public function behaviors()
     {
         $behaviors = parent::behaviors();
@@ -78,15 +78,15 @@ class BaseController extends ActiveController
         $auth = $behaviors['authenticator'];
         unset($behaviors['authenticator']);
 
-        $behaviors['corsFilter'] =  [
+        $behaviors['corsFilter'] = [
             'class' => \yii\filters\Cors::className(),
-            'cors'  => [
-                'Origin'                           => ['*'],
+            'cors' => [
+                'Origin' => static::allowedDomains(),
                 'Access-Control-Request-Method' => ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'HEAD', 'OPTIONS'],
                 'Access-Control-Request-Headers' => ['*'],
                 'Access-Control-Allow-Credentials' => true,
-                'Access-Control-Max-Age'           => 3600,
-                'Access-Control-Expose-Headers' => ['X-Pagination-Total-Count','X-Pagination-Page-Count', 'X-Pagination-Current-Page', 'X-Pagination-Per-Page'],
+                'Access-Control-Max-Age' => 3600,
+                'Access-Control-Expose-Headers' => ['X-Pagination-Total-Count', 'X-Pagination-Page-Count', 'X-Pagination-Current-Page', 'X-Pagination-Per-Page'],
             ],
         ];
         $behaviors['authenticator'] = $auth;
