@@ -94,7 +94,7 @@ class m200428_185343_create_tables extends Migration
 
         $this->createTable('order_statuses', [
             'id' => $this->primaryKey()->notNull(),
-            'name' => $this->string(50)->notNull()
+            'name' => $this->string(50)->notNull(),
         ]);
 
         $this->createTable('orders', [
@@ -307,6 +307,9 @@ class m200428_185343_create_tables extends Migration
 
         $category_id = (new Query)->select('id')->from('services_categories')->where(['code' => 'notas'])->scalar();
         $this->insert('services', ['category_id' => $category_id, 'name' => 'Certidão de procuração', 'type' => Service::TYPE_CERTIFICATE]);
+        $this->insert('services', ['category_id' => $category_id, 'name' => 'Certidão de escritura', 'type' => Service::TYPE_CERTIFICATE]);
+        $this->insert('services', ['category_id' => $category_id, 'name' => 'Certidão de escritura de união estável', 'type' => Service::TYPE_CERTIFICATE]);
+        $this->insert('services', ['category_id' => $category_id, 'name' => 'Certidão de pacto antenupcial', 'type' => Service::TYPE_CERTIFICATE]);
 
         $category_id = (new Query)->select('id')->from('services_categories')->where(['code' => 'protesto'])->scalar();
         $this->insert('services', ['category_id' => $category_id, 'name' => 'Certidão de protesto', 'type' => Service::TYPE_CERTIFICATE]);
@@ -562,7 +565,7 @@ class m200428_185343_create_tables extends Migration
         }
 
 
-        $tables = ['invoices', 'order_history', 'orders', 'order_statuses', 'services', 'users', 'customers', 'password_reset'];
+        $tables = ['invoices', 'order_history', 'orders', 'order_statuses', 'services', 'users', 'customers', 'password_reset', 'services_categories'];
 
         foreach ($tables as $table) {
             $this->dropTable($table);

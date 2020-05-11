@@ -117,6 +117,15 @@ $config = [
                 ],
                 [
                     'class' => 'yii\rest\UrlRule', 
+                    'controller' => 'service-category', 
+                    'patterns' => [
+                        'GET' => 'index',
+                        'OPTIONS' => 'options',
+                        'OPTIONS {id}' => 'options',
+                    ],
+                ],
+                [
+                    'class' => 'yii\rest\UrlRule', 
                     'controller' => 'federative-unit', 
                     'patterns' => [
                         'GET {uf}' => 'cities',

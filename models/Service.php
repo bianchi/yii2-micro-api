@@ -2,6 +2,7 @@
 
 namespace api\models;
 
+use app\models\ServiceCategory;
 use Yii;
 
 /**
@@ -48,19 +49,18 @@ class Service extends \yii\db\ActiveRecord
         ];
     }
 
+    public function extraFields()
+    {
+        return ['category', 'orders'];
+    }
+
     public function getOrders()
     {
         return $this->hasMany(Order::className(), ['service_id' => 'id']);
     }
 
-    public function getFullname()
+    public function getCategory()
     {
-        if ($this->type == self::TYPE_CERTIFICATE) {
-            return 'Certidão de ' . $this->name;
-        } elseif ($this->type == self::TYPE_RESEARCH) {
-            return 'Pesquisa de ' . $this->name;
-        }
-
-        return $this->name;
+        return $this->hasOne(ServiceCategory::className(), ['id' => 'category_id']);
     }
 }

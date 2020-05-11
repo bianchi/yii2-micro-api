@@ -42,6 +42,9 @@ class OrderController extends BaseController
     {
         $this->checkAccess($this->action->id, null);
 
-        return [];
+        $searchModel = new OrderSearch;
+        $params = \Yii::$app->request->get();
+
+        return $searchModel->searchStats($params);
     }
 }

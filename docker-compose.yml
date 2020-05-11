@@ -8,7 +8,7 @@ services:
     image: yiisoftware/yii2-php:7.4-apache
     volumes:
         - ./:/app
-        - ./docker/apache/000-default.conf:/etc/apache2/sites-enabled/000-default.conf
+        # - ./docker/apache/000-default.conf:/etc/apache2/sites-enabled/000-default.conf
     ports:
         - 8000:80
     networks:
