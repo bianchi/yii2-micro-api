@@ -68,7 +68,7 @@ class Api
     public function get($endpoint, $params = [])
     {
         if ($this->needsLogin()) {
-            $this->login();
+            $this->curlLogin();
         }
         
         $url = $this->url($endpoint, $params);
@@ -149,14 +149,22 @@ class Api
             'Content-Type' => 'application/json'
         ]);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch,CURLOPT_FAILONERROR,true);
         curl_setopt($ch,CURLOPT_POST, 1);
         curl_setopt($ch, CURLOPT_POSTFIELDS, [
             'EMAIL' => $this->email,
             'PASS' => $this->password
         ]);
         $response = curl_exec($ch);
-
+        
+        $curl_errno= curl_errno($ch);
         curl_close($ch);
+
+
+        echo "<pre>";
+        print_r($curl_errno);
+        echo "</pre>";
+        exit();
 
         // do anything you want with your response
         $response = json_decode($response);

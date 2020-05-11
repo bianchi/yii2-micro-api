@@ -21,6 +21,7 @@ $config = [
                     'patterns' => [
                         'POST' => 'create',
                         'GET' => 'index',
+                        'OPTIONS' => 'options',
                     ],
                 ],
                 [
@@ -30,7 +31,9 @@ $config = [
                     'patterns' => [
                         'POST' => 'create',
                         'GET {token}' => 'view',
-                        'PATCH {token}' => 'change-password'
+                        'PATCH {token}' => 'change-password',
+                        'OPTIONS' => 'options',
+                        'OPTIONS {token}' => 'options',
                     ],
                     'tokens' => [
                         '{token}' => '<token:\\w+>',
@@ -42,6 +45,7 @@ $config = [
                     'pluralize' => false,
                     'patterns' => [
                         'POST' => 'login',
+                        'OPTIONS' => 'options',
                     ],
                 ],
                 [
@@ -52,7 +56,9 @@ $config = [
                         'POST' => 'create',
                         'GET {id}' => 'view',
                         'PATCH {id}' => 'update',
-                        'PATCH,OPTIONS {id}/password' => 'change-password'
+                        'PATCH,OPTIONS {id}/password' => 'change-password',
+                        'OPTIONS' => 'options',
+                        'OPTIONS {id}' => 'options',
                     ],
                 ],
                 [
@@ -62,6 +68,8 @@ $config = [
                         'POST' => 'create',
                         'GET {id}' => 'view',
                         'PATCH {id}' => 'update',
+                        'OPTIONS' => 'options',
+                        'OPTIONS {id}' => 'options',
                     ],
                 ],
                 [
@@ -71,6 +79,8 @@ $config = [
                         'GET' => 'index',
                         'GET {id}' => 'view',
                         'GET stats' => 'stats',
+                        'OPTIONS' => 'options',
+                        'OPTIONS {id}' => 'options',
                     ],
                 ],
                 [
@@ -79,6 +89,8 @@ $config = [
                     'patterns' => [
                         'POST deposits' => 'insert-credits',
                         'POST deposits/approve' => 'approve-inserted-credits',
+                        'OPTIONS deposits' => 'options',
+                        'OPTIONS deposits/approve' => 'options',
                     ],
                 ],
                 [
@@ -88,6 +100,8 @@ $config = [
                         'GET' => 'index',
                         'GET {id}' => 'view',
                         'GET stats' => 'stats',
+                        'OPTIONS' => 'options',
+                        'OPTIONS {id}' => 'options',
                     ],
                 ],
                 [
@@ -95,6 +109,8 @@ $config = [
                     'controller' => 'service', 
                     'patterns' => [
                         'GET' => 'index',
+                        'OPTIONS' => 'options',
+                        'OPTIONS {id}' => 'options',
                     ],
                 ],
                 [
@@ -102,6 +118,8 @@ $config = [
                     'controller' => 'federative-unit', 
                     'patterns' => [
                         'GET {uf}' => 'cities',
+                        'OPTIONS' => 'options',
+                        'OPTIONS {uf}' => 'options',
                     ],
                     'tokens' => [
                         '{uf}' => '<uf:[a-zA-Z]{2}>',
