@@ -10,6 +10,8 @@ use yii\web\UnauthorizedHttpException;
 
 class BaseController extends ActiveController
 {
+    public $enableCsrfValidation = false;
+    
     public function beforeAction($action)
     {
         if ($action->id == 'options') {
