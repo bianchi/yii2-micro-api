@@ -299,7 +299,7 @@ class m200428_185343_create_tables extends Migration
             'address_city' => 'Toledo',
             'address_uf' => 'PR',
             'backoffice_email' => 'empresa@teste.com',
-            'backoffice_password' => 'Emp@1234!'
+            'backoffice_password' => 'Emp@1234#'
         ]);
 
         $this->insert('customers', [

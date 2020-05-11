@@ -18,9 +18,7 @@ Create the database
 ------------------------
 
 If you are running with docker you can access phpmyadmin at http://localhost:82/
-Create your database with collation utf8_general_ci
-
-Update username and password values at config/database.php file.
+Create your database with collation utf8_general_ci, use same username as in config/database.php file.
 
 Open project folder in a console and run:
 
@@ -31,4 +29,4 @@ Confirm to create database tables
 Acessing the API
 -----------------------
 
-You now can access the API at http://localhost:8000/
+You now can access the API at http://localhost:8000/login

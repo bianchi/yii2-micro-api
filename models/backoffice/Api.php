@@ -6,6 +6,8 @@ use api\exceptions\BadGatewayHttpException;
 use GuzzleHttp\Client as Guzzle;
 use api\models\User;
 use GuzzleHttp\Exception\RequestException;
+use GuzzleHttp\Handler\CurlHandler;
+use GuzzleHttp\HandlerStack;
 use GuzzleHttp\Middleware;
 use yii\web\ForbiddenHttpException;
 
@@ -32,9 +34,9 @@ class Api
         $this->email = $email;
         $this->password = $password;
         $this->guzzle = new Guzzle([
-            'base_uri' => self::BASE_URL,
             'headers' => ['Content-Type' => 'application/json'],
             'timeout' => 10,
+            'http_errors' => false
         ]);
     }
 
@@ -46,7 +48,7 @@ class Api
             $url .= '/' . http_build_query($params);
         }
 
-        return $url;
+        return self::BASE_URL . '/' . $url;
     }
 
     private function needsLogin()
@@ -89,6 +91,11 @@ class Api
             ]);
 
             $response = json_decode($response->getBody());
+
+            echo "<pre>";
+            print_r($response);
+            echo "</pre>";
+            exit();
 
             if ($response->return == self::API_RETURN_OK) {
                 $this->key = $response->key;
@@ -133,5 +140,33 @@ class Api
             'PASS' => $this->password],
             'handler' => $tapMiddleware($clientHandler)
         ]);
+    }
+
+    private function curlLogin()
+    {
+        $ch = curl_init('https://apiex.cartorionobrasil.com.br/login');
+        curl_setopt($ch, CURLOPT_HTTPHEADER, [
+            'Content-Type' => 'application/json'
+        ]);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch,CURLOPT_POST, 1);
+        curl_setopt($ch, CURLOPT_POSTFIELDS, [
+            'EMAIL' => $this->email,
+            'PASS' => $this->password
+        ]);
+        $response = curl_exec($ch);
+
+        curl_close($ch);
+
+        // do anything you want with your response
+        $response = json_decode($response);
+
+        if ($response->return == self::API_RETURN_OK) {
+            $this->key = $response->Key;
+            $this->client = $response->Client;
+        } elseif ($response->return == self::API_RETURN_ERROR) {
+            throw new BadGatewayHttpException($response->msg);
+        }
+        exit();
     }
 }
