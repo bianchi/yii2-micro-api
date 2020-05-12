@@ -36,7 +36,7 @@ class Api
         $this->guzzle = new Guzzle([
             'headers' => ['Content-Type' => 'application/json'],
             'timeout' => 10,
-            // 'http_errors' => false
+            'http_errors' => false
         ]);
     }
 
@@ -68,11 +68,19 @@ class Api
     public function get($endpoint, $params = [])
     {
         if ($this->needsLogin()) {
-            $this->curlLogin();
+            $this->login();
         }
         
         $url = $this->url($endpoint, $params);
+        echo "<pre>";
+        print_r($url);
+        echo "</pre>";
+        exit();
         $response = $this->guzzle->get($url);
+        echo "<pre>";
+        print_r($response);
+        echo "</pre>";
+        exit();
 
         $response = json_decode($response->getBody());
 
@@ -92,14 +100,9 @@ class Api
 
             $response = json_decode($response->getBody());
 
-            echo "<pre>";
-            print_r($response);
-            echo "</pre>";
-            exit();
-
             if ($response->return == self::API_RETURN_OK) {
-                $this->key = $response->key;
-                $this->client = $response->client;
+                $this->key = $response->Key;
+                $this->client = $response->Client;
             } elseif ($response->return == self::API_RETURN_ERROR) {
                 throw new BadGatewayHttpException($response->msg);
             }
@@ -111,13 +114,17 @@ class Api
     public function getCities($uf) 
     {
         $response = $this->get('/' . $uf);
+        echo "<pre>";
+        print_r($response);
+        echo "</pre>";
+        exit();
 
         return $response;
     }
 
-    public function getNotariesOffices($uf) 
+    public function getNotariesOffices($uf, $city, $service) 
     {
-        return $this->get('/' . $uf);
+        return $this->get('/' . $uf . '/' . $city . '/' . $service);
     }
 
     public function insertCredits()

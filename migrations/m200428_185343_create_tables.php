@@ -103,11 +103,13 @@ class m200428_185343_create_tables extends Migration
             'user_id' => $this->integer()->notNull(),
             'service_id' => $this->integer()->notNull(),
             'current_status_id' => $this->integer()->notNull(),
-            // 'name' => $this->string(80)->notNull(),
+            'name' => $this->string(120)->notNull(),
             'priority' => $this->boolean()->defaultValue(false),
             'placed_time' => $this->dateTime()->notNull()->defaultExpression('CURRENT_TIMESTAMP'),
             'estimated_time' => $this->dateTime()->notNull(),
-            'delivered_time' => $this->dateTime()
+            'delivered_time' => $this->dateTime(),
+            'rejected_reason' => $this->text(),
+            'annotations' => $this->text(),
         ]);
 
         $this->createIndex(
@@ -397,6 +399,7 @@ class m200428_185343_create_tables extends Migration
             'customer_id' => 1,
             'service_id' => 1,
             'current_status_id' => 4,
+            'name' => 'Certidão de nascimento da Maria Augusta',
             'estimated_time' => $estimatedTime->format('Y-m-d H:i:s')
         ]);
 
@@ -425,6 +428,7 @@ class m200428_185343_create_tables extends Migration
             'customer_id' => 1,
             'service_id' => 2,
             'current_status_id' => 2,
+            'name' => 'Certidão de casamento do Pedro e da Luana',
             'estimated_time' => $estimatedTime->format('Y-m-d H:i:s')
         ]);
 
@@ -443,6 +447,7 @@ class m200428_185343_create_tables extends Migration
             'customer_id' => 1,
             'service_id' => 3,
             'current_status_id' => 1,
+            'name' => 'Interdição do Seu Pedro',
             'estimated_time' => $estimatedTime->format('Y-m-d H:i:s')
         ]);
 
@@ -454,8 +459,9 @@ class m200428_185343_create_tables extends Migration
         $this->insert('orders', [
             'user_id' => 3,
             'customer_id' => 2,
-            'service_id' => 7,
+            'service_id' => 8,
             'current_status_id' => 1,
+            'name' => 'Pesquisa do imóvel para nova loja',
             'estimated_time' => $estimatedTime->format('Y-m-d H:i:s')
         ]);
 
