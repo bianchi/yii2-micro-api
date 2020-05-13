@@ -3,6 +3,7 @@
 namespace api\models;
 
 use app\models\ServiceCategory;
+use app\models\ServiceSubtype;
 use Yii;
 
 /**
@@ -51,7 +52,7 @@ class Service extends \yii\db\ActiveRecord
 
     public function extraFields()
     {
-        return ['category', 'orders'];
+        return ['category', 'orders', 'subtypes'];
     }
 
     public function getOrders()
@@ -67,8 +68,8 @@ class Service extends \yii\db\ActiveRecord
     /**
      * @return \yii\db\ActiveQuery
      */
-    public function getServicesSubtypes()
+    public function getSubtypes()
     {
-        return $this->hasMany(ServicesSubtypes::className(), ['service_id' => 'id']);
+        return $this->hasMany(ServiceSubtype::className(), ['service_id' => 'id']);
     }
 }
