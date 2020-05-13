@@ -30,7 +30,7 @@ class Account extends Model
     public $user_email;
     public $user_password;
     public $user_is_admin;
-    public $user_can_order_service;
+    public $user_can_order_services;
     public $user_can_insert_credits;
     public $user_can_see_reports;
     public $user_can_see_invoices;
@@ -101,6 +101,12 @@ class Account extends Model
 
     public function save()
     {
+        $this->user_is_admin = true;
+        $this->user_can_insert_credits = true;
+        $this->user_can_order_services = true;
+        $this->user_can_see_invoices = true;
+        $this->user_can_see_reports = true;
+
         if ($this->validate()) {
             $customer = new Customer;
             $user = new User;
@@ -115,11 +121,6 @@ class Account extends Model
                 }
 
                 $user->customer_id = $customer->id;
-                $user->is_admin = true;
-                $user->can_insert_credits = true;
-                $user->can_order_services = true;
-                $user->can_see_invoices = true;
-                $user->can_see_reports = true;
                 if (!$user->save()) {
                     throw new \Exception("User save failed");
                 }
