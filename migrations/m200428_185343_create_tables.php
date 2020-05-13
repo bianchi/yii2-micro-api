@@ -11,7 +11,7 @@ class m200428_185343_create_tables extends Migration
     {
         $this->createTable('customers', [
             'id' => $this->primaryKey()->notNull(),
-            'name' => $this->string(100)->notNull(),
+            'name' => $this->string(100),
             'corporate_name' => $this->string(100),
             'entity_type' => "ENUM('PF', 'PJ') NOT NULL",
             'document_number' => $this->string(14)->notNull(),

@@ -20,6 +20,9 @@ class Customer extends \yii\db\ActiveRecord
 {
     use SetAttributesWithPrefix;
     
+    const SCENARIO_CREATE = 'create';
+    const SCENARIO_UPDATE = 'update';
+
     const ENTITY_TYPE_PF = 'PF';
     const ENTITY_TYPE_PJ = 'PJ';
     
@@ -31,9 +34,14 @@ class Customer extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['name', 'document_number', 'entity_type'], 'required'],
+            [['name'], 'required', 'when' => function($model) {
+                return $model->entity_type == self::ENTITY_TYPE_PF;
+            }],
+            [['corporate_name'], 'required', 'when' => function($model) {
+                return $model->entity_type == self::ENTITY_TYPE_PJ;
+            }],
+            [['document_number', 'entity_type'], 'required'],
             [['entity_type'], 'string'],
-            [['max_users'], 'integer'],
             [['name'], 'string', 'max' => 100],
             [['document_number'], 'string', 'max' => 14],
             [['address_zip_code', 'address_number'], 'string', 'max' => 8],
@@ -77,6 +85,14 @@ class Customer extends \yii\db\ActiveRecord
             'max_users' => 'Max Users',
         ];
     }    
+
+    public function scenarios()
+    {
+        return [
+            self::SCENARIO_CREATE => ['name','corporate_name', 'address_zip_code', 'address_public_place', 'address_number', 'address_complement', 'address_neighborhood', 'address_city', 'address_uf', 'entity_type', 'document_number', '!key', '!secret'],
+            self::SCENARIO_UPDATE => ['name','corporate_name', 'address_zip_code', 'address_public_place', 'address_number', 'address_complement', 'address_neighborhood', 'address_city', 'address_uf', '!entity_type', '!document_number', '!key', '!secret'],
+        ];
+    }
 
     public function getUsers()
     {

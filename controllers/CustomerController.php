@@ -72,6 +72,7 @@ class CustomerController extends BaseController
         if ($model == null) {
             throw new NotFoundHttpException("Customer not found");
         }
+        $model->scenario = Customer::SCENARIO_UPDATE;
         
         $this->checkAccess($this->action->id, $model);
 

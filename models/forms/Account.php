@@ -16,6 +16,7 @@ class Account extends Model
     public $customer_id;
     public $customer_entity_type;
     public $customer_name;
+    public $customer_corporate_name;
     public $customer_document_number;
     public $customer_address_zip_code;
     public $customer_address_number;
@@ -39,7 +40,10 @@ class Account extends Model
     public function rules()
     {
         return [
-            [['customer_name', 'user_name', 'user_email', 'user_password'], 'required'],
+            [['customer_corporate_name'], 'required', 'when' => function($model) {
+                return $model->customer_entity_type == Customer::ENTITY_TYPE_PJ;
+            }],
+            [['user_name', 'user_email', 'user_password'], 'required'],
             [['customer_name'], 'string', 'max' => 100],
             [['customer_document_number'], 'string', 'max' => 14],
             [['customer_address_zip_code', 'customer_address_number'], 'string', 'max' => 8],
@@ -111,7 +115,7 @@ class Account extends Model
         $this->user_can_see_reports = true;
 
         if ($this->validate()) {
-            $customer = new Customer;
+            $customer = new Customer(['scenario' => Customer::SCENARIO_CREATE]);
             $user = new User;
 
             $customer->setAttributesWithPrefix($this->attributes, 'customer_');
