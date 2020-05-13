@@ -75,7 +75,9 @@ class m200428_185343_create_tables extends Migration
             'id' => $this->primaryKey()->notNull(),
             'category_id' => $this->integer()->notNull(),
             'name' => $this->string(120),
-            'type' => "ENUM('Certificate', 'Research')"
+            'type' => "ENUM('Certificate', 'Research')",
+            'backoffice_url' => $this->string(120),
+            'form_model_path' => $this->text()
         ]);
 
         $this->createIndex(
@@ -92,6 +94,27 @@ class m200428_185343_create_tables extends Migration
             'id'
         );
 
+        $this->createTable('services_subtypes', [
+            'id' => $this->primaryKey()->notNull(),
+            'service_id' => $this->integer()->notNull(),
+            'name' => $this->string(120)->notNull(),
+            'backoffice_url' => $this->string(120)->notNull(),
+        ]);
+
+        $this->createIndex(
+            'idx-services_subtypes-service_id',
+            'services_subtypes',
+            'service_id'
+        );
+
+        $this->addForeignKey(
+            'fk-services_subtypes-service_id',
+            'services_subtypes',
+            'service_id',
+            'services',
+            'id'
+        );
+
         $this->createTable('order_statuses', [
             'id' => $this->primaryKey()->notNull(),
             'name' => $this->string(50)->notNull(),
@@ -102,6 +125,7 @@ class m200428_185343_create_tables extends Migration
             'customer_id' => $this->integer()->notNull(),
             'user_id' => $this->integer()->notNull(),
             'service_id' => $this->integer()->notNull(),
+            'service_subtype_id' => $this->integer(),
             'current_status_id' => $this->integer()->notNull(),
             'name' => $this->string(120)->notNull(),
             'priority' => $this->boolean()->defaultValue(false),
@@ -165,6 +189,20 @@ class m200428_185343_create_tables extends Migration
             'orders',
             'current_status_id',
             'order_statuses',
+            'id'
+        );
+
+        $this->createIndex(
+            'idx-orders-service_subtype_id',
+            'orders',
+            'service_subtype_id'
+        );
+
+        $this->addForeignKey(
+            'fk-orders-service_subtype_id',
+            'orders',
+            'service_subtype_id',
+            'services_subtypes',
             'id'
         );
 
@@ -296,37 +334,189 @@ class m200428_185343_create_tables extends Migration
 
 
         $category_id = (new Query)->select('id')->from('services_categories')->where(['code' => 'registro-civil'])->scalar();
-        $this->insert('services', ['category_id' => $category_id, 'name' => 'Certidão de nascimento', 'type' => Service::TYPE_CERTIFICATE]);
-        $this->insert('services', ['category_id' => $category_id, 'name' => 'Certidão de casamento', 'type' => Service::TYPE_CERTIFICATE]);
-        $this->insert('services', ['category_id' => $category_id, 'name' => 'Certidão de interdição', 'type' => Service::TYPE_CERTIFICATE]);
-        $this->insert('services', ['category_id' => $category_id, 'name' => 'Certidão de escritura', 'type' => Service::TYPE_CERTIFICATE]);
-        $this->insert('services', ['category_id' => $category_id, 'name' => 'Certidão de escritura de união estável', 'type' => Service::TYPE_CERTIFICATE]);
-        $this->insert('services', ['category_id' => $category_id, 'name' => 'Certidão de escritura de pacto antenupcial', 'type' => Service::TYPE_CERTIFICATE]);
+        $this->insert('services', [
+            'category_id' => $category_id, 
+            'name' => 'Certidão de nascimento', 
+            'type' => Service::TYPE_CERTIFICATE, 
+            'backoffice_url' => 'certidao-nascimento',
+            'form_model_path' => 'api\models\forms\services\certificates\Nascimento'
+        ]);
+
+        $this->insert('services', [
+            'category_id' => $category_id, 
+            'name' => 'Certidão de casamento', 
+            'type' => Service::TYPE_CERTIFICATE,
+            'backoffice_url' => 'certidao-casamento',
+            'form_model_path' => 'api\models\forms\services\certificates\Casamento'
+        ]);
+
+        $this->insert('services', [
+            'category_id' => $category_id, 
+            'name' => 'Certidão de interdição', 
+            'type' => Service::TYPE_CERTIFICATE, 
+            'backoffice_url' => 'certidao-interdicao',
+            'form_model_path' => 'api\models\forms\services\certificates\Interdicao'
+        ]);
+
+        $this->insert('services', [
+            'category_id' => $category_id, 
+            'name' => 'Certidão de escritura', 
+            'type' => Service::TYPE_CERTIFICATE,
+            'backoffice_url' => 'certidao-interdicao-civil',
+            'form_model_path' => 'api\models\forms\services\certificates\Escritura'
+        ]);
+
+        $this->insert('services', [
+            'category_id' => $category_id, 
+            'name' => 'Certidão de escritura de união estável', 
+            'type' => Service::TYPE_CERTIFICATE,
+            'backoffice_url' => 'xxxxxxxxx',
+            'form_model_path' => 'api\models\forms\services\certificates'
+        ]);
+
+        $this->insert('services', [
+            'category_id' => $category_id, 
+            'name' => 'Certidão de escritura de pacto antenupcial', 
+            'type' => Service::TYPE_CERTIFICATE,
+            'backoffice_url' => 'xxxxxxxxx',
+            'form_model_path' => 'api\models\forms\services\certificates'
+        ]);
         
         $category_id = (new Query)->select('id')->from('services_categories')->where(['code' => 'registro-imoveis'])->scalar();
-        $this->insert('services', ['category_id' => $category_id, 'name' => 'Certidão de imóvel', 'type' => Service::TYPE_CERTIFICATE]);
-        $this->insert('services', ['category_id' => $category_id, 'name' => 'Pesquisa de imóvel', 'type' => Service::TYPE_RESEARCH]);
+        $this->insert('services', [
+            'category_id' => $category_id, 
+            'name' => 'Pesquisa de imóvel', 
+            'type' => Service::TYPE_RESEARCH,
+            'form_model_path' => 'api\models\forms\services\researchs\Imovel'
+        ]);
+
+        $this->insert('services', [
+            'category_id' => $category_id, 
+            'name' => 'Certidão de imóvel', 
+            'type' => Service::TYPE_CERTIFICATE,
+            'backoffice_url' => null,
+            'form_model_path' => 'api\models\forms\services\certificates\Imovel'
+        ]);
+
+        $service_id = (new Query)->select('id')->from('services')->where(['name' => 'Certidão de imóvel'])->scalar();
+        $this->insert('services_subtypes', [
+            'service_id' => $service_id, 
+            'name' => 'Transcrição', 
+            'backoffice_url' => 'certidao-transcricao'
+        ]);
+
+        $this->insert('services_subtypes', [
+            'service_id' => $service_id, 
+            'name' => 'Vintenária', 
+            'backoffice_url' => 'certidao-vintenaria'
+        ]);
+
+        $this->insert('services_subtypes', [
+            'service_id' => $service_id, 
+            'name' => 'Ônus', 
+            'backoffice_url' => 'certidao-onus'
+        ]);
+
+        $this->insert('services_subtypes', [
+            'service_id' => $service_id, 
+            'name' => 'Matrícula', 
+            'backoffice_url' => 'certidao-matricula'
+        ]);
 
         $category_id = (new Query)->select('id')->from('services_categories')->where(['code' => 'notas'])->scalar();
-        $this->insert('services', ['category_id' => $category_id, 'name' => 'Certidão de procuração', 'type' => Service::TYPE_CERTIFICATE]);
-        $this->insert('services', ['category_id' => $category_id, 'name' => 'Certidão de escritura', 'type' => Service::TYPE_CERTIFICATE]);
-        $this->insert('services', ['category_id' => $category_id, 'name' => 'Certidão de escritura de união estável', 'type' => Service::TYPE_CERTIFICATE]);
-        $this->insert('services', ['category_id' => $category_id, 'name' => 'Certidão de pacto antenupcial', 'type' => Service::TYPE_CERTIFICATE]);
+        $this->insert('services', [
+            'category_id' => $category_id, 
+            'name' => 'Certidão de procuração', 
+            'type' => Service::TYPE_CERTIFICATE,
+            'backoffice_url' => 'certidao-procuracao',
+            'form_model_path' => 'api\models\forms\services\certificates\Procuracao'
+        ]);
+
+        $this->insert('services', [
+            'category_id' => $category_id, 
+            'name' => 'Certidão de escritura', 
+            'type' => Service::TYPE_CERTIFICATE,
+            'backoffice_url' => 'certidao-escritura',
+            'form_model_path' => 'api\models\forms\services\certificates\Escritura'
+        ]);
+
+        $this->insert('services', [
+            'category_id' => $category_id, 
+            'name' => 'Certidão de escritura de união estável', 
+            'type' => Service::TYPE_CERTIFICATE
+        ]);
+
+        $this->insert('services', [
+            'category_id' => $category_id, 
+            'name' => 'Certidão de pacto antenupcial', 
+            'type' => Service::TYPE_CERTIFICATE
+        ]);
 
         $category_id = (new Query)->select('id')->from('services_categories')->where(['code' => 'protesto'])->scalar();
-        $this->insert('services', ['category_id' => $category_id, 'name' => 'Certidão de protesto', 'type' => Service::TYPE_CERTIFICATE]);
+        $this->insert('services', [
+            'category_id' => $category_id, 
+            'name' => 'Certidão de protesto', 
+            'type' => Service::TYPE_CERTIFICATE,
+            'backoffice_url' => 'certidao-protesto',
+            'form_model_path' => 'api\models\forms\services\certificates\Protesto'
+        ]);
 
         $category_id = (new Query)->select('id')->from('services_categories')->where(['code' => 'serasa'])->scalar();
-        $this->insert('services', ['category_id' => $category_id, 'name' => 'Consultar outro CPF ou CNPJ no Serasa', 'type' => Service::TYPE_RESEARCH]);
-        $this->insert('services', ['category_id' => $category_id, 'name' => 'Monitorar meu CPF no Serasa', 'type' => Service::TYPE_RESEARCH]);
+        $this->insert('services', [
+            'category_id' => $category_id, 
+            'name' => 'Consultar outro CPF ou CNPJ no Serasa', 
+            'type' => Service::TYPE_RESEARCH
+        ]);
+
+        $this->insert('services', [
+            'category_id' => $category_id, 
+            'name' => 'Monitorar meu CPF no Serasa', 
+            'type' => Service::TYPE_RESEARCH
+        ]);
 
         $category_id = (new Query)->select('id')->from('services_categories')->where(['code' => 'federais-estaduais'])->scalar();
-        $this->insert('services', ['category_id' => $category_id, 'name' => 'Certidão de Empresa (Junta Comercial)', 'type' => Service::TYPE_CERTIFICATE]);
-        $this->insert('services', ['category_id' => $category_id, 'name' => 'CNDT - Certidão Negativa de Débitos Trabalhista', 'type' => Service::TYPE_CERTIFICATE]);
-        $this->insert('services', ['category_id' => $category_id, 'name' => 'CNDTNIDA - Certidão Negativa de Débitos de Tributos Federais', 'type' => Service::TYPE_CERTIFICATE]);
-        $this->insert('services', ['category_id' => $category_id, 'name' => 'Certidão Negativo do FGTS', 'type' => Service::TYPE_CERTIFICATE]);
-        $this->insert('services', ['category_id' => $category_id, 'name' => 'ITR', 'type' => Service::TYPE_CERTIFICATE]);
-        $this->insert('services', ['category_id' => $category_id, 'name' => 'TFDAU', 'type' => Service::TYPE_CERTIFICATE]);
+        $this->insert('services', [
+            'category_id' => $category_id, 
+            'name' => 'Certidão de Empresa (Junta Comercial)', 
+            'type' => Service::TYPE_CERTIFICATE,
+            'form_model_path' => 'api\models\forms\services\researchs\JuntaComercial'
+        ]);
+
+        $this->insert('services', [
+            'category_id' => $category_id, 
+            'name' => 'CNDT - Certidão Negativa de Débitos Trabalhista', 
+            'type' => Service::TYPE_CERTIFICATE,
+            'form_model_path' => 'api\models\forms\services\certificates\NegativaDebitosTrabalhistasCNDT'
+        ]);
+
+        $this->insert('services', [
+            'category_id' => $category_id, 
+            'name' => 'CNDTNIDA - Certidão Negativa de Débitos de Tributos Federais', 
+            'type' => Service::TYPE_CERTIFICATE,
+            'form_model_path' => 'api\models\forms\services\certificates\NegativaDebitosTributosFederaisCNDTNIDA'
+        ]);
+
+        $this->insert('services', [
+            'category_id' => $category_id, 
+            'name' => 'Certidão Negativo do FGTS', 
+            'type' => Service::TYPE_CERTIFICATE,
+            'backoffice_url' => 'certidao-negativa-fgts',
+            'form_model_path' => 'api\models\forms\services\certificates\NegativaFGTS'
+        ]);
+
+        $this->insert('services', [
+            'category_id' => $category_id, 
+            'name' => 'ITR', 
+            'type' => Service::TYPE_CERTIFICATE,
+            'backoffice_url' => 'certidao-itr',
+            'form_model_path' => 'api\models\forms\services\certificates\ITR'
+        ]);
+        
+        $this->insert('services', [
+            'category_id' => $category_id, 
+            'name' => 'TFDAU', 
+            'type' => Service::TYPE_CERTIFICATE
+        ]);
 
         $this->insert('order_statuses', ['name' => 'Em andamento']);
         $this->insert('order_statuses', ['name' => 'Localizado']);
@@ -539,6 +729,7 @@ class m200428_185343_create_tables extends Migration
             'orders' =>'fk-orders-customer_id',
             'orders' => 'fk-orders-service_id',
             'orders' => 'fk-orders-current_status_id',
+            'orders' => 'fk-orders-service_subtype_id',
             'order_history' => 'fk-order_history-order_id',
             'order_history' => 'fk-order_history-status_id',
             'invoices' => 'fk-invoices-customer_id',
@@ -558,6 +749,7 @@ class m200428_185343_create_tables extends Migration
             'orders' =>'idx-orders-customer_id',
             'orders' => 'idx-orders-service_id',
             'orders' => 'idx-orders-current_status_id',
+            'orders' => 'idx-orders-service_subtype_id',
             'order_history' => 'idx-order_history-order_id',
             'order_history' => 'idx-order_history-status_id',
             'invoices' => 'idx-invoices-customer_id',
@@ -571,7 +763,7 @@ class m200428_185343_create_tables extends Migration
         }
 
 
-        $tables = ['invoices', 'order_history', 'orders', 'order_statuses', 'services', 'users', 'customers', 'password_reset', 'services_categories'];
+        $tables = ['invoices', 'order_history', 'orders', 'order_statuses', 'services_subtypes', 'services', 'users', 'customers', 'password_reset', 'services_categories'];
 
         foreach ($tables as $table) {
             $this->dropTable($table);

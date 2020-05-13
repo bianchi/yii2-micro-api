@@ -63,4 +63,12 @@ class Service extends \yii\db\ActiveRecord
     {
         return $this->hasOne(ServiceCategory::className(), ['id' => 'category_id']);
     }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getServicesSubtypes()
+    {
+        return $this->hasMany(ServicesSubtypes::className(), ['service_id' => 'id']);
+    }
 }

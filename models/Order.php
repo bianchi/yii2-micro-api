@@ -36,10 +36,11 @@ class Order extends \yii\db\ActiveRecord
     {
         return [
             [['user_id', 'service_id', 'current_status_id'], 'required'],
-            [['user_id', 'service_id', 'current_status_id'], 'integer'],
+            [['user_id', 'service_id', 'current_status_id', 'service_subtype_id'], 'integer'],
             [['placed_time'], 'safe'],
             [['current_status_id'], 'exist', 'skipOnError' => true, 'targetClass' => OrderStatus::className(), 'targetAttribute' => ['current_status_id' => 'id']],
             [['service_id'], 'exist', 'skipOnError' => true, 'targetClass' => Service::className(), 'targetAttribute' => ['service_id' => 'id']],
+            [['service_subtype_id'], 'exist', 'skipOnError' => true, 'targetClass' => ServiceSubtype::className(), 'targetAttribute' => ['service_id' => 'id']],
             [['user_id'], 'exist', 'skipOnError' => true, 'targetClass' => User::className(), 'targetAttribute' => ['user_id' => 'id']],
         ];
     }
