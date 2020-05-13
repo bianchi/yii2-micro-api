@@ -29,6 +29,7 @@ class Account extends Model
     public $user_name;
     public $user_email;
     public $user_password;
+    public $user_phone;
     public $user_is_admin;
     public $user_can_order_services;
     public $user_can_insert_credits;
@@ -56,6 +57,7 @@ class Account extends Model
             [['user_email'], 'email'],
             [['user_email'], 'string', 'max' => 200],
             [['user_password'], 'string', 'max' => 255],
+            [['user_phone'], 'string', 'max' => 15],
             [['customer_entity_type'], 'in', 'range' => [Customer::ENTITY_TYPE_PF, Customer::ENTITY_TYPE_PJ]]
 
         ];
@@ -77,6 +79,7 @@ class Account extends Model
             'user_name' => 'Nome do usuário',
             'user_email' => 'Email',
             'user_password' => 'Senha',
+            'user_phone' => 'Telefone',
         ];
     }
 
