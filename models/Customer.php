@@ -47,7 +47,13 @@ class Customer extends \yii\db\ActiveRecord
             }],
             [['document_number'], CnpjValidator::className(), 'when' => function($model) {
                 return $model->entity_type == self::ENTITY_TYPE_PJ;
-            }]
+            }],
+            [['document_number'], 'unique', 'message' => 'O CNPJ digitado já foi utilizado', 'when' => function($model) {
+                return $model->entity_type == self::ENTITY_TYPE_PJ;
+            }],
+            [['document_number'], 'unique', 'message' => 'O CPF digitado já foi utilizado', 'when' => function($model) {
+                return $model->entity_type == self::ENTITY_TYPE_PF;
+            }],
         ];
     }
     

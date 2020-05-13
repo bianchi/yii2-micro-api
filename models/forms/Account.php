@@ -141,7 +141,7 @@ class Account extends Model
                  * Besides Account being validate there can be still errors in models attributes that can't be validated easily here like user unique email
                  * if that happens convert the error from Customer/User to the corresponding Account attribute
                  */
-                $this->setErrorsAddingPrefix($user->getErrors(), 'user_');
+                $this->setErrorsAddingPrefix($user->getErrors(), 'user_', ['customer_id']);
                 $this->setErrorsAddingPrefix($customer->getErrors(), 'customer_');
                 $transaction->rollback();
                 return false;
