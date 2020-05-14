@@ -13,4 +13,7 @@ class Pesquisa extends Model {
 
     const ENTIDADE_FISICA = 'fisica';
     const ENTIDADE_JURIDICA = 'juridica';
+
+    const NIVEL_SIMPLES = 'simples';
+    const NIVEL_COMPLETA = 'completa';
 }

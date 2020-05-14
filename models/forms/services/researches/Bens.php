@@ -6,36 +6,17 @@ use yiibr\brvalidator\CnpjValidator;
 use yiibr\brvalidator\CpfValidator;
 
 class Bens extends Pesquisa {
-    public $tipo_pessoa;
-    public $cpf;
-    public $cnpj;
+    public $uf;
+    public $cidade;
+    public $nivel;
+    public $ids_cartorios;
 
     public function rules()
     {
         return [
-            [['tipo_pessoa'], 'required'],
-            [['cpf'], 'required', 'when' => function ($model) {
-                return $model->tipo_pessoa == self::ENTIDADE_FISICA;
-            }],
-            [['cnpj'], 'required', 'when' => function ($model) {
-                return $model->tipo_pessoa == self::ENTIDADE_JURIDICA;
-            }],
-            [['tipo_pessoa'], 'in', 'range' => [self::ENTIDADE_FISICA, self::ENTIDADE_JURIDICA]],
-            [['cnpj'], CnpjValidator::className(), 'when' => function ($model) {
-                return $model->tipo_pessoa == self::ENTIDADE_JURIDICA;
-            }],
-            [['cpf'], CpfValidator::className(), 'when' => function ($model) {
-                return $model->tipo_pessoa == self::ENTIDADE_FISICA;
-            }],
-        ];
-    }
-
-    public function attributeLabels()
-    {
-        return [
-            'tipo_pessoa' => 'Tipo de pessoa',
-            'cpf' => 'CPF',
-            'cnpj' => 'CNPJ',
+            [['uf'], 'string', 'max' => 2],
+            [['cidade'], 'string', 'max' => 255],
+            [['nivel'], 'in', 'range' => [self::NIVEL_SIMPLES, self::NIVEL_COMPLETA]],
         ];
     }
 }

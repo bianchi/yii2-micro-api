@@ -10,8 +10,4 @@ class Protesto extends Certidao {
         return [
         ];
     }
-
-    public function attributeLabels()
-    {
-    }
 }
